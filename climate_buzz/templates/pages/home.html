@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% block title %}
+Feed
+{% endblock title %}
+{% block javascript %}
+{{block.super}}
+<script defer src="{% static 'js/feed.js' %}"></script>
+{% endblock javascript %}
+
+
+{% block content %}
+
+<!-- ... previous content ... -->
+<div class="container mt-5">
+    <!-- Filter Options -->
+    <div class="row mb-4">
+      <div class="col">
+        {% comment %} <select id="filterByPublisher" class="form-select">
+          <option selected>Filter by Publisher</option>
+          <!-- Populate this select dynamically -->
+        </select> {% endcomment %}
+      </div>
+    </div>
+
+    <!-- Articles -->
+    <div id="articles" class="row">
+      <!-- Articles will be populated here -->
+    </div>
+
+    <!-- Loading Spinner -->
+    <div id="loading" class="text-center mt-4">
+      <div class="spinner-border" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+    </div>
+  </div>
+<!-- ... previous content ... -->
+
+{% endblock content %}
