@@ -19,3 +19,18 @@
   max-height: 400px; 
   object-fit: cover; 
 }
+
+.like-btn, .share-btn {
+  margin-top: 10px;
+  cursor: pointer;
+}
+
+.comments-section input {
+  padding: 5px;
+  margin-right: 10px;
+  width: 80%;
+}
+
+.comments-section .submit-comment {
+  cursor: pointer;
+}

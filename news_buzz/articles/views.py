@@ -15,8 +15,11 @@ from django.contrib import messages
 from django.contrib.auth.forms import UserCreationForm
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login
-
-
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+import json
+from .models import Like, Article  # Assuming the Like model and Article model are in the same models.py file
+from django.contrib.auth.decorators import login_required
 
 
 
@@ -116,4 +119,17 @@ def signup_view(request):
     # Render the form, either with or without errors
     return render(request, 'registration/signup.html', {'form': form})
 
+@csrf_exempt
+@login_required
+def like_article(request):
+    if request.method == "POST":
+        data = json.loads(request.body)
+        article_id = data.get('article_id')
 
+        # Assuming you have a Like model as discussed previously
+        like = Like(user=request.user, article_id=article_id)
+        like.save()
+
+        return JsonResponse({"message": "Article liked!"}, status=201)
+
+    return JsonResponse({"error": "Invalid request method"}, status=405)

@@ -1,5 +1,8 @@
 from django.db import models
 from django_extensions.db.models import TimeStampedModel
+from django.conf import settings
+
+
 
 
 class Publisher(TimeStampedModel):
@@ -21,3 +24,12 @@ class Article(TimeStampedModel):
 
     def __str__(self):
         return self.title
+class Like(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    article = models.ForeignKey(Article, on_delete=models.CASCADE)
+    timestamp = models.DateTimeField(auto_now_add=True)
+class Comment(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    article = models.ForeignKey(Article, on_delete=models.CASCADE)
+    content = models.TextField()
+    timestamp = models.DateTimeField(auto_now_add=True)

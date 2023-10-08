@@ -37,24 +37,56 @@ const loadArticles = () => {
 // Function to append articles to the DOM
 const appendArticles = (articles) => {
   const articleContainer = document.getElementById('articles');
+
   articles.forEach(article => {
-    const articleDiv = document.createElement('div');
-    articleDiv.classList.add('col-12');
-    articleDiv.innerHTML = `
-      <div class="card mb-4">
-        <img src="${article.image_url || '/static/images/placeholder.png'}" class="card-img-top" alt="...">
-        <div class="card-body">
-          <h5 class="card-title">${article.title}</h5>
-          <p class="card-text">${article.description}</p>
-          <small class="text-muted">Published by ${article.publisher}</small><br>
-          <small class="text-muted">Date: ${new Date(article.published_at).toLocaleString()}</small>
-          <a href="${article.url}" class="btn btn-primary mt-2">Read More</a>
-        </div>
-      </div>
-    `;
-    articleContainer.appendChild(articleDiv);
+      const articleDiv = document.createElement('div');
+      articleDiv.classList.add('col-12');
+      articleDiv.innerHTML = `
+          <div class="card mb-4">
+              <img src="${article.image_url || '/static/images/placeholder.png'}" class="card-img-top" alt="...">
+              <div class="card-body">
+                  <h5 class="card-title">${article.title}</h5>
+                  <p class="card-text">${article.description}</p>
+                  <small class="text-muted">Published by ${article.publisher}</small><br>
+                  <small class="text-muted">Date: ${new Date(article.published_at).toLocaleString()}</small>
+                  <a href="${article.url}" class="btn btn-primary mt-2">Read More</a>
+                  <button class="btn btn-light like-btn">Like</button>
+                  <div class="comments-section mt-2">
+                      <input type="text" placeholder="Add a comment..."/>
+                      <button class="btn btn-secondary submit-comment">Submit</button>
+                  </div>
+                  <button class="btn btn-info share-btn mt-2">Share</button>
+              </div>
+          </div>
+      `;
+
+      articleContainer.appendChild(articleDiv);
+
+      const likeBtn = articleDiv.querySelector('.like-btn');
+      likeBtn.addEventListener('click', (e) => {
+          e.preventDefault();
+          fetch('/api/like/', {
+              method: 'POST',
+              body: JSON.stringify({
+                  article_id: article.id  // Assuming each article has an id
+              }),
+              headers: {
+                  'Content-Type': 'application/json'
+              }
+          })
+          .then(response => response.json())
+          .then(data => {
+              if (data.message === "Article liked!") {
+                  likeBtn.textContent = "Liked!";
+              }
+          });
+      });
+
+
   });
 };
+
+
 
 /* Project specific Javascript goes here. */
 // Initializing

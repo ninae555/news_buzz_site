@@ -20,6 +20,7 @@ urlpatterns = [
     path('domains/', views.list_domains, name='view_domains'),
     path('accounts/', include('django.contrib.auth.urls')),
     path('article/<int:article_id>/', views.view_article, name='view_article'),
+    path('api/like/', views.like_article, name='like_article'),
 
 ]
 # from django.urls import path
