@@ -6,8 +6,8 @@ from pathlib import Path
 import environ
 
 BASE_DIR = Path(__file__).resolve(strict=True).parent.parent.parent
-# climate_buzz/
-APPS_DIR = BASE_DIR / "climate_buzz"
+# news_buzz/
+APPS_DIR = BASE_DIR / "news_buzz"
 env = environ.Env()
 
 READ_DOT_ENV_FILE = env.bool("DJANGO_READ_DOT_ENV_FILE", default=True)
@@ -89,8 +89,8 @@ THIRD_PARTY_APPS = [
 ]
 
 LOCAL_APPS = [
-    "climate_buzz.users",
-    "climate_buzz.articles",
+    "news_buzz.users",
+    "news_buzz.articles",
     # Your stuff: custom apps go here
 ]
 # https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
@@ -99,7 +99,7 @@ INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
 # MIGRATIONS
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#migration-modules
-MIGRATION_MODULES = {"sites": "climate_buzz.contrib.sites.migrations"}
+MIGRATION_MODULES = {"sites": "news_buzz.contrib.sites.migrations"}
 
 # AUTHENTICATION
 # ------------------------------------------------------------------------------
@@ -193,7 +193,7 @@ TEMPLATES = [
                 "django.template.context_processors.static",
                 "django.template.context_processors.tz",
                 "django.contrib.messages.context_processors.messages",
-                "climate_buzz.users.context_processors.allauth_settings",
+                "news_buzz.users.context_processors.allauth_settings",
             ],
         },
     }
@@ -313,13 +313,13 @@ ACCOUNT_USER_MODEL_USERNAME_FIELD = None
 # https://django-allauth.readthedocs.io/en/latest/configuration.html
 ACCOUNT_EMAIL_VERIFICATION = "mandatory"
 # https://django-allauth.readthedocs.io/en/latest/configuration.html
-ACCOUNT_ADAPTER = "climate_buzz.users.adapters.AccountAdapter"
+ACCOUNT_ADAPTER = "news_buzz.users.adapters.AccountAdapter"
 # https://django-allauth.readthedocs.io/en/latest/forms.html
-ACCOUNT_FORMS = {"signup": "climate_buzz.users.forms.UserSignupForm"}
+ACCOUNT_FORMS = {"signup": "news_buzz.users.forms.UserSignupForm"}
 # https://django-allauth.readthedocs.io/en/latest/configuration.html
-SOCIALACCOUNT_ADAPTER = "climate_buzz.users.adapters.SocialAccountAdapter"
+SOCIALACCOUNT_ADAPTER = "news_buzz.users.adapters.SocialAccountAdapter"
 # https://django-allauth.readthedocs.io/en/latest/forms.html
-SOCIALACCOUNT_FORMS = {"signup": "climate_buzz.users.forms.UserSocialSignupForm"}
+SOCIALACCOUNT_FORMS = {"signup": "news_buzz.users.forms.UserSocialSignupForm"}
 
 # django-rest-framework
 # -------------------------------------------------------------------------------
@@ -339,8 +339,8 @@ CORS_URLS_REGEX = r"^/api/.*$"
 # By Default swagger ui is available only to admin user(s). You can change permission classes to change that
 # See more configuration options at https://drf-spectacular.readthedocs.io/en/latest/settings.html#settings
 SPECTACULAR_SETTINGS = {
-    "TITLE": "Climate Buzz API",
-    "DESCRIPTION": "Documentation of API endpoints of Climate Buzz",
+    "TITLE": "News Buzz API",
+    "DESCRIPTION": "Documentation of API endpoints of News Buzz",
     "VERSION": "1.0.0",
     "SERVE_PERMISSIONS": ["rest_framework.permissions.IsAdminUser"],
 }

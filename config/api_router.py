@@ -1,8 +1,8 @@
 from django.conf import settings
 from rest_framework.routers import DefaultRouter, SimpleRouter
 
-from climate_buzz.users.api.views import UserViewSet
-from climate_buzz.articles.api.views import ArticleViewSet
+from news_buzz.users.api.views import UserViewSet
+from news_buzz.articles.api.views import ArticleViewSet
 
 if settings.DEBUG:
     router = DefaultRouter()

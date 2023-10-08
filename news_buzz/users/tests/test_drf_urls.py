@@ -1,6 +1,6 @@
 from django.urls import resolve, reverse
 
-from climate_buzz.users.models import User
+from news_buzz.users.models import User
 
 
 def test_user_detail(user: User):

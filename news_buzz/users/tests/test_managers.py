@@ -3,7 +3,7 @@ from io import StringIO
 import pytest
 from django.core.management import call_command
 
-from climate_buzz.users.models import User
+from news_buzz.users.models import User
 
 
 @pytest.mark.django_db

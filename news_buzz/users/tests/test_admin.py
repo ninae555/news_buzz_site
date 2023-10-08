@@ -1,6 +1,6 @@
 from django.urls import reverse
 
-from climate_buzz.users.models import User
+from news_buzz.users.models import User
 
 
 class TestUserAdmin:

@@ -1,4 +1,4 @@
-from climate_buzz.users.models import User
+from news_buzz.users.models import User
 
 
 def test_user_get_absolute_url(user: User):

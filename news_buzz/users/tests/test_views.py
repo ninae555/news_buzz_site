@@ -9,10 +9,10 @@ from django.test import RequestFactory
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 
-from climate_buzz.users.forms import UserAdminChangeForm
-from climate_buzz.users.models import User
-from climate_buzz.users.tests.factories import UserFactory
-from climate_buzz.users.views import (
+from news_buzz.users.forms import UserAdminChangeForm
+from news_buzz.users.models import User
+from news_buzz.users.tests.factories import UserFactory
+from news_buzz.users.views import (
     UserRedirectView,
     UserUpdateView,
     user_detail_view,

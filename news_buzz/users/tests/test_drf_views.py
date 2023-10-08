@@ -1,8 +1,8 @@
 import pytest
 from rest_framework.test import APIRequestFactory
 
-from climate_buzz.users.api.views import UserViewSet
-from climate_buzz.users.models import User
+from news_buzz.users.api.views import UserViewSet
+from news_buzz.users.models import User
 
 
 class TestUserViewSet:

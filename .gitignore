@@ -272,7 +272,7 @@ tags
 dump.rdb
 
 ### Project template
-climate_buzz/media/
+news_buzz/media/
 
 .pytest_cache/
 db.sqlite3

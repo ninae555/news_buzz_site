@@ -3,7 +3,7 @@ import django.contrib.auth.validators
 from django.db import migrations, models
 import django.utils.timezone
 
-import climate_buzz.users.models
+import news_buzz.users.models
 
 
 class Migration(migrations.Migration):
@@ -105,7 +105,7 @@ class Migration(migrations.Migration):
                 "abstract": False,
             },
             managers=[
-                ("objects", climate_buzz.users.models.UserManager()),
+                ("objects", news_buzz.users.models.UserManager()),
             ],
         ),
     ]

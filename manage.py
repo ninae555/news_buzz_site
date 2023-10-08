@@ -24,8 +24,8 @@ if __name__ == "__main__":
         raise
 
     # This allows easy placement of apps within the interior
-    # climate_buzz directory.
+    # news_buzz directory.
     current_path = Path(__file__).parent.resolve()
-    sys.path.append(str(current_path / "climate_buzz"))
+    sys.path.append(str(current_path / "news_buzz"))
 
     execute_from_command_line(sys.argv)

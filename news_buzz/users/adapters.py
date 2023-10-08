@@ -9,7 +9,7 @@ from django.http import HttpRequest
 
 if typing.TYPE_CHECKING:
     from allauth.socialaccount.models import SocialLogin
-    from climate_buzz.users.models import User
+    from news_buzz.users.models import User
 
 
 class AccountAdapter(DefaultAccountAdapter):
