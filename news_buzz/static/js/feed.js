@@ -39,7 +39,7 @@ const appendArticles = (articles) => {
   const articleContainer = document.getElementById('articles');
   articles.forEach(article => {
     const articleDiv = document.createElement('div');
-    articleDiv.classList.add('col-md-4');
+    articleDiv.classList.add('col-12');
     articleDiv.innerHTML = `
       <div class="card mb-4">
         <img src="${article.image_url || '/static/images/placeholder.png'}" class="card-img-top" alt="...">
