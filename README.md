@@ -1,4 +1,4 @@
-# Climate Buzz
+# News Buzz
 
 Collection of Climate Articles
 
