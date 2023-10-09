@@ -35,6 +35,7 @@ const loadArticles = () => {
 };
 
 // Function to append articles to the DOM
+// Function to append articles to the DOM
 const appendArticles = (articles) => {
   const articleContainer = document.getElementById('articles');
 
@@ -62,13 +63,14 @@ const appendArticles = (articles) => {
 
       articleContainer.appendChild(articleDiv);
 
+      // Like button listener
       const likeBtn = articleDiv.querySelector('.like-btn');
       likeBtn.addEventListener('click', (e) => {
           e.preventDefault();
           fetch('/api/like/', {
               method: 'POST',
               body: JSON.stringify({
-                  article_id: article.id  // Assuming each article has an id
+                  article_id: article.id
               }),
               headers: {
                   'Content-Type': 'application/json'
@@ -82,9 +84,68 @@ const appendArticles = (articles) => {
           });
       });
 
+      // Share button listener
+      const shareBtn = articleDiv.querySelector('.share-btn');
+      shareBtn.addEventListener('click', (e) => {
+          e.preventDefault();
+          fetch('/api/share/', {
+              method: 'POST',
+              body: JSON.stringify({
+                  article_id: article.id
+              }),
+              headers: {
+                  'Content-Type': 'application/json'
+              }
+          })
+          .then(response => response.json())
+          .then(data => {
+              if (data.message === "Article shared!") {
+                  alert('Article shared successfully!');
+              }
+          });
+      });
 
+      // Read More button listener
+      const readMoreBtn = articleDiv.querySelector('.btn-primary');
+      readMoreBtn.addEventListener('click', (e) => {
+          fetch('/api/click/', {
+              method: 'POST',
+              body: JSON.stringify({
+                  article_id: article.id
+              }),
+              headers: {
+                  'Content-Type': 'application/json'
+              }
+          });
+      });
+
+      // Comment button listener
+      const submitCommentBtn = articleDiv.querySelector('.submit-comment');
+      const commentInput = articleDiv.querySelector('.comments-section input');
+      submitCommentBtn.addEventListener('click', (e) => {
+          e.preventDefault();
+          const commentText = commentInput.value;
+          if (commentText.trim() === '') return;  // Avoid empty comments
+          fetch('/api/comment/', {
+              method: 'POST',
+              body: JSON.stringify({
+                  article_id: article.id,
+                  comment: commentText
+              }),
+              headers: {
+                  'Content-Type': 'application/json'
+              }
+          })
+          .then(response => response.json())
+          .then(data => {
+              if (data.message === "Comment added!") {
+                  commentInput.value = '';  // Clear the input field after submitting
+              }
+          });
+      });
   });
 };
+
 
 
 
