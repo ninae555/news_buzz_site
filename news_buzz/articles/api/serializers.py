@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from articles.models import Article
-
+from articles.models import Like, Comment
 
 
 class ArticleSerializer(serializers.ModelSerializer):
@@ -8,3 +8,13 @@ class ArticleSerializer(serializers.ModelSerializer):
     class Meta:
         model = Article
         fields = ["id", "url", "description", "title", "image_url", "author", "publisher", "published_at"]
+
+class LikeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Like
+        fields = '__all__'
+
+class CommentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Comment
+        fields = '__all__'

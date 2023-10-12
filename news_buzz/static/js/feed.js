@@ -14,11 +14,11 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // Filtering mechanism
-  document.getElementById('filterByPublisher').addEventListener('change', () => {
-    currentPage = 1; // Reset to the first page
-    document.getElementById('articles').innerHTML = ''; // Clear existing articles
-    loadArticles();
-  });
+//   document.getElementById('filterByPublisher').addEventListener('change', () => {
+//     currentPage = 1; // Reset to the first page
+//     document.getElementById('articles').innerHTML = ''; // Clear existing articles
+//     loadArticles();
+//   });
 });
 
 // Function to Load Articles
@@ -66,11 +66,12 @@ const appendArticles = (articles) => {
       // Like button listener
       const likeBtn = articleDiv.querySelector('.like-btn');
       likeBtn.addEventListener('click', (e) => {
+          console.log("like")
           e.preventDefault();
           fetch('/api/like/', {
               method: 'POST',
               body: JSON.stringify({
-                  article_id: article.id
+                  article: article.id
               }),
               headers: {
                   'Content-Type': 'application/json'
@@ -87,6 +88,7 @@ const appendArticles = (articles) => {
       // Share button listener
       const shareBtn = articleDiv.querySelector('.share-btn');
       shareBtn.addEventListener('click', (e) => {
+          console.log("share")
           e.preventDefault();
           fetch('/api/share/', {
               method: 'POST',
@@ -108,6 +110,7 @@ const appendArticles = (articles) => {
       // Read More button listener
       const readMoreBtn = articleDiv.querySelector('.btn-primary');
       readMoreBtn.addEventListener('click', (e) => {
+          console.log("readmore")
           fetch('/api/click/', {
               method: 'POST',
               body: JSON.stringify({
@@ -123,6 +126,7 @@ const appendArticles = (articles) => {
       const submitCommentBtn = articleDiv.querySelector('.submit-comment');
       const commentInput = articleDiv.querySelector('.comments-section input');
       submitCommentBtn.addEventListener('click', (e) => {
+        console.log("comment")
           e.preventDefault();
           const commentText = commentInput.value;
           if (commentText.trim() === '') return;  // Avoid empty comments
