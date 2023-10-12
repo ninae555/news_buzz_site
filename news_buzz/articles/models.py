@@ -24,12 +24,12 @@ class Article(TimeStampedModel):
 
     def __str__(self):
         return self.title
-class Like(models.Model):
+
+class Like(TimeStampedModel):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     article = models.ForeignKey(Article, on_delete=models.CASCADE)
-    timestamp = models.DateTimeField(auto_now_add=True)
-class Comment(models.Model):
+
+class Comment(TimeStampedModel):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     article = models.ForeignKey(Article, on_delete=models.CASCADE)
     content = models.TextField()
-    timestamp = models.DateTimeField(auto_now_add=True)
