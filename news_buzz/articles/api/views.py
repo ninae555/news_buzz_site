@@ -1,9 +1,9 @@
-from rest_framework.mixins import ListModelMixin
+from rest_framework.mixins import ListModelMixin, CreateModelMixin, DestroyModelMixin
 from rest_framework.viewsets import GenericViewSet
 from articles.models import Article
 from .serializers import ArticleSerializer
 from rest_framework import viewsets
-from articles.models import Like, Comment
+from articles.models import Reaction, Comment
 from .serializers import LikeSerializer, CommentSerializer
 
 
@@ -11,7 +11,7 @@ class ArticleViewSet(ListModelMixin, GenericViewSet):
     authentication_classes = []
     permission_classes = []
     serializer_class = ArticleSerializer
-    queryset = Article.objects.all().values(
+    queryset = Article.objects.filter(publisher__is_excluded=False).values(
         "id",
         "url",
         "description",
@@ -22,13 +22,13 @@ class ArticleViewSet(ListModelMixin, GenericViewSet):
         "published_at",
     )
 
-class LikeViewSet(viewsets.ModelViewSet):
+class LikeViewSet(CreateModelMixin, DestroyModelMixin, GenericViewSet):
     authentication_classes = []
     permission_classes = []
-    queryset = Like.objects.all()
     serializer_class = LikeSerializer
+    queryset = Reaction.objects.all()
 
-class CommentViewSet(viewsets.ModelViewSet):
+class CommentViewSet(ListModelMixin, CreateModelMixin, DestroyModelMixin,GenericViewSet):
     authentication_classes = []
     permission_classes = []
     queryset = Comment.objects.all()
