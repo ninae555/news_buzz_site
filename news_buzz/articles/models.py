@@ -33,3 +33,10 @@ class Comment(TimeStampedModel):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     article = models.ForeignKey(Article, on_delete=models.CASCADE)
     content = models.TextField()
+
+
+class Participant(models.Model):
+    participant_id = models.CharField(max_length=100, unique=True)
+    
+    def __str__(self):
+        return self.participant_id

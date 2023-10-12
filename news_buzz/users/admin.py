@@ -1,3 +1,4 @@
+# app/admin.py
 from django.conf import settings
 from django.contrib import admin
 from django.contrib.auth import admin as auth_admin
@@ -5,6 +6,8 @@ from django.contrib.auth import get_user_model, decorators
 from django.utils.translation import gettext_lazy as _
 
 from news_buzz.users.forms import UserAdminChangeForm, UserAdminCreationForm
+from .models import Participant
+from import_export.admin import ImportExportMixin
 
 User = get_user_model()
 
@@ -13,6 +16,12 @@ if settings.DJANGO_ADMIN_FORCE_ALLAUTH:
     # https://django-allauth.readthedocs.io/en/stable/advanced.html#admin
     admin.site.login = decorators.login_required(admin.site.login)  # type: ignore[method-assign]
 
+
+
+        
+@admin.register(Participant)
+class ParticipantAdmin(ImportExportMixin,admin.ModelAdmin):
+    list_display = ["id", "participant_id"]
 
 @admin.register(User)
 class UserAdmin(auth_admin.UserAdmin):
