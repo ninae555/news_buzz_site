@@ -1,17 +1,24 @@
 // Initializing
 let currentPage = 1;
 let isLoading = false;
-
-document.addEventListener('DOMContentLoaded', () => {
-  // Initial Load
+function submitParticipantId(){
+  console.log("clicked sign in 2")
+  document.getElementById("participantLoginFormDiv").style.display = "none";
+  document.getElementById("feedContent").style.display = "block";
   loadArticles();
+
+}
+document.addEventListener('DOMContentLoaded', () => {
+
+  // // Initial Load
+  // loadArticles();
   
-  // Infinite Scroll
-  window.addEventListener('scroll', () => {
-    if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 1000 && !isLoading) {
-      loadArticles();
-    }
-  });
+  // // Infinite Scroll
+  // window.addEventListener('scroll', () => {
+  //   if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 1000 && !isLoading) {
+  //     loadArticles();
+  //   }
+  // });
 
   // Filtering mechanism
 //   document.getElementById('filterByPublisher').addEventListener('change', () => {
@@ -69,14 +76,15 @@ const appendArticles = (articles) => {
           console.log("like")
           e.preventDefault();
           fetch('/api/like/', {
-              method: 'POST',
-              body: JSON.stringify({
-                  article: article.id
-              }),
-              headers: {
-                  'Content-Type': 'application/json'
-              }
-          })
+            method: 'POST',
+            body: JSON.stringify({
+                article: article.id,
+                participant_id: document.getElementById('participant_id').textContent // Add this line
+            }),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
           .then(response => response.json())
           .then(data => {
               if (data.message === "Article liked!") {
@@ -91,14 +99,15 @@ const appendArticles = (articles) => {
           console.log("share")
           e.preventDefault();
           fetch('/api/share/', {
-              method: 'POST',
-              body: JSON.stringify({
-                  article_id: article.id
-              }),
-              headers: {
-                  'Content-Type': 'application/json'
-              }
-          })
+            method: 'POST',
+            body: JSON.stringify({
+                article_id: article.id,
+                participant_id: document.getElementById('participant_id').textContent // Add this line
+            }),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
           .then(response => response.json())
           .then(data => {
               if (data.message === "Article shared!") {
@@ -112,14 +121,15 @@ const appendArticles = (articles) => {
       readMoreBtn.addEventListener('click', (e) => {
           console.log("readmore")
           fetch('/api/click/', {
-              method: 'POST',
-              body: JSON.stringify({
-                  article_id: article.id
-              }),
-              headers: {
-                  'Content-Type': 'application/json'
-              }
-          });
+            method: 'POST',
+            body: JSON.stringify({
+                article_id: article.id,
+                participant_id: document.getElementById('participant_id').textContent // Add this line
+            }),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
       });
 
       // Comment button listener
@@ -131,15 +141,16 @@ const appendArticles = (articles) => {
           const commentText = commentInput.value;
           if (commentText.trim() === '') return;  // Avoid empty comments
           fetch('/api/comment/', {
-              method: 'POST',
-              body: JSON.stringify({
-                  article_id: article.id,
-                  comment: commentText
-              }),
-              headers: {
-                  'Content-Type': 'application/json'
-              }
-          })
+            method: 'POST',
+            body: JSON.stringify({
+                article_id: article.id,
+                comment: commentText,
+                participant_id: document.getElementById('participant_id').textContent // Add this line
+            }),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
           .then(response => response.json())
           .then(data => {
               if (data.message === "Comment added!") {

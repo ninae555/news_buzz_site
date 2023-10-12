@@ -5,16 +5,32 @@
 {% block title %}
 Feed
 {% endblock title %}
+
 {% block javascript %}
 {{block.super}}
 <script defer src="{% static 'js/feed.js' %}"></script>
 {% endblock javascript %}
 
-
 {% block content %}
-
-<!-- ... previous content ... -->
 <div class="container mt-5">
+
+  <!-- Participant Login Form -->
+  <div id="participantLoginFormDiv">
+    <h1>Sign In with Participant ID</h1>
+    <form id="participantLoginForm" >
+      
+      <label for="id_of_participant">Enter your Participant ID:</label>
+      <input type="text" name="id_of_participant" required>
+      <button id="signinBtn" onclick="submitParticipantId()" class="primaryAction btn btn-primary" type="button">Sign In</button>
+    </form>
+  </div>
+
+  <!-- Feed Content, initially hidden -->
+  <div id="feedContent" style="display:none;">
+
+    <!-- Showing participant_id, if required -->
+    <div id="participant_id">{{ request.session.participant_id }}</div>
+
     <!-- Filter Options -->
     <div class="row mb-4">
       <div class="col">
@@ -29,10 +45,10 @@ Feed
     <div id="articles" class="row">
       <!-- An example article container -->
       <div class="col-12 mb-4 article-container">
-          <!-- Article content goes here -->
+        <!-- Article content goes here -->
       </div>
     </div>
-   
+    
     <!-- Loading Spinner -->
     <div id="loading" class="text-center mt-4">
       <div class="spinner-border" role="status">
@@ -40,6 +56,5 @@ Feed
       </div>
     </div>
   </div>
-<!-- ... previous content ... -->
-
+</div>
 {% endblock content %}

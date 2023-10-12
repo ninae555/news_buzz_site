@@ -26,3 +26,5 @@ pandas==2.1.1
 newsapi-python==0.2.7
 tldextract==3.6.0
 
+django-import-export==3.3.1
+

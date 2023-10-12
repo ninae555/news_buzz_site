@@ -1,5 +1,5 @@
 from django.contrib import admin
-from articles.models import Article, Publisher
+from articles.models import Article, Publisher, Participant
 
 @admin.register(Publisher)
 class PublisherAdmin(admin.ModelAdmin):
@@ -9,3 +9,4 @@ class PublisherAdmin(admin.ModelAdmin):
 @admin.register(Article)
 class ArticleAdmin(admin.ModelAdmin):
     list_display = ["id", "publisher", "title", "url", "created", "modified"]
+
