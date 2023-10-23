@@ -1,3 +1,4 @@
+import uuid
 from django.contrib.auth.models import AbstractUser
 from django.db.models import CharField, EmailField, BooleanField, DateTimeField, ForeignKey
 from django.db import models
@@ -37,10 +38,12 @@ class User(AbstractUser):
         return reverse("users:detail", kwargs={"pk": self.id})
 
 class Participant(TimeStampedModel):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     participant_id = CharField(_("Id of Participant"), max_length=255, unique=True)
     is_active = BooleanField(_("is participant active"), default=True)
 
 class Session(TimeStampedModel):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     participant = ForeignKey(Participant, related_name="sessions", on_delete=models.CASCADE)
     is_active = BooleanField(_("is session active"), default=True)
     end_time = DateTimeField(_("time session ended"), auto_now=False, auto_now_add=False)

@@ -1,5 +1,5 @@
 from django.core.management.base import BaseCommand
-from articles.models import Article, Publisher
+from news_buzz.articles.models import Article, Publisher
 from newsapi import NewsApiClient
 from django.conf import settings
 from django.utils import timezone
@@ -32,21 +32,22 @@ class Command(BaseCommand):
         articles_to_create = []
         # Process articles
         for article in articles:
-            url_components = tldextract.extract(article['url']) 
-            article_domain = url_components.domain + "." + url_components.suffix
-            publisher_id=eligible_publishers.get(article_domain.lower())
-            if publisher_id:
-                articles_to_create.append(Article(
-                    title=article['title'],
-                    content=article['content'],
-                    author=article['author'],
-                    url=article['url'],
-                    image_url=article['urlToImage'],
-                    published_at=article['publishedAt'],
-                    description=article['description'],
-                    publisher_id=publisher_id
+            if not Article.objects.filter(url=article['url']).exists():
+                url_components = tldextract.extract(article['url']) 
+                article_domain = url_components.domain + "." + url_components.suffix
+                publisher_id=eligible_publishers.get(article_domain.lower())
+                if publisher_id:
+                    articles_to_create.append(Article(
+                        title=article['title'],
+                        content=article['content'],
+                        author=article['author'],
+                        url=article['url'],
+                        image_url=article['urlToImage'],
+                        published_at=article['publishedAt'],
+                        description=article['description'],
+                        publisher_id=publisher_id
 
-                ))
+                    ))
             else:
                 self.stdout.write(self.style.ERROR(f'Error processing article could now found publisher: {article}'))
 
