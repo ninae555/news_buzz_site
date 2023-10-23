@@ -1,6 +1,6 @@
 from rest_framework import serializers
-from articles.models import Article
-from articles.models import Like, Comment
+from news_buzz.articles.models import Article
+from news_buzz.articles.models import Reaction, Comment
 
 
 class ArticleSerializer(serializers.ModelSerializer):
@@ -9,10 +9,10 @@ class ArticleSerializer(serializers.ModelSerializer):
         model = Article
         fields = ["id", "url", "description", "title", "image_url", "author", "publisher", "published_at"]
 
-class LikeSerializer(serializers.ModelSerializer):
+class ReactionSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Like
-        fields = '__all__'
+        model = Reaction
+        fields = ["id", "type", "participant", "article"]
 
 class CommentSerializer(serializers.ModelSerializer):
     class Meta:

@@ -2,7 +2,7 @@
 
 from django.core.management.base import BaseCommand
 import csv
-from articles.models import Participant
+from news_buzz.articles.models import Participant
 
 class Command(BaseCommand):
     help = 'Import participant IDs from a CSV file'
