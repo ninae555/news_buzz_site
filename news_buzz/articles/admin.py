@@ -1,5 +1,5 @@
 from django.contrib import admin
-from articles.models import Article, Publisher, Participant
+from news_buzz.articles.models import Article, Publisher, Participant
 
 @admin.register(Publisher)
 class PublisherAdmin(admin.ModelAdmin):

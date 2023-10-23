@@ -30,11 +30,22 @@ class Article(TimeStampedModel):
 
 class Reaction(TimeStampedModel):
     LIKE = "L"
-    HEART = "H"
+    LOVE = "LV"
+    CARE = "C"
     WOW = "W"
-    #  = ""
+    HAHA = "H"
+    SAD = "S"
+    ANGRY = "A"
 
-    REACTION_TYPES = []
+    REACTION_TYPES = [
+        (LIKE, "Like"),
+        (LOVE, "Love"),
+        (CARE, "Care"),
+        (WOW, "WOW"),
+        (HAHA, "Haha"),
+        (SAD, "Sad"),
+        (ANGRY, "Angry"),
+    ]
     type = models.CharField(max_length=3, choices=REACTION_TYPES)
     participant = models.ForeignKey(Participant, on_delete=models.CASCADE)
     session = models.ForeignKey(Session, on_delete=models.CASCADE)

@@ -1,10 +1,10 @@
 from rest_framework.mixins import ListModelMixin, CreateModelMixin, DestroyModelMixin
 from rest_framework.viewsets import GenericViewSet
-from articles.models import Article
+from news_buzz.articles.models import Article
 from .serializers import ArticleSerializer
 from rest_framework import viewsets
-from articles.models import Reaction, Comment
-from .serializers import LikeSerializer, CommentSerializer
+from news_buzz.articles.models import Reaction, Comment
+from .serializers import ReactionSerializer, CommentSerializer
 
 
 class ArticleViewSet(ListModelMixin, GenericViewSet):
@@ -25,7 +25,7 @@ class ArticleViewSet(ListModelMixin, GenericViewSet):
 class LikeViewSet(CreateModelMixin, DestroyModelMixin, GenericViewSet):
     authentication_classes = []
     permission_classes = []
-    serializer_class = LikeSerializer
+    serializer_class = ReactionSerializer
     queryset = Reaction.objects.all()
 
 class CommentViewSet(ListModelMixin, CreateModelMixin, DestroyModelMixin,GenericViewSet):

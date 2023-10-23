@@ -1,5 +1,5 @@
 from django.core.management.base import BaseCommand, CommandError
-from articles.models import Publisher
+from news_buzz.articles.models import Publisher
 import pandas as pd
 
 
