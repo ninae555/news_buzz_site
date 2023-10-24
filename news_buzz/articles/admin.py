@@ -1,12 +1,25 @@
 from django.contrib import admin
-from news_buzz.articles.models import Article, Publisher, Participant
+from import_export.admin import ImportExportMixin 
+from news_buzz.articles.models import Article, Publisher, ArticleSent, ArticleTimeSpent, Reaction, ReadEntireArticleClick
 
 @admin.register(Publisher)
-class PublisherAdmin(admin.ModelAdmin):
+class PublisherAdmin(ImportExportMixin, admin.ModelAdmin):
     list_display = ["id", "domain", "pc1", "created", "modified"]
 
 
 @admin.register(Article)
-class ArticleAdmin(admin.ModelAdmin):
-    list_display = ["id", "publisher", "title", "url", "created", "modified"]
+class ArticleAdmin(ImportExportMixin, admin.ModelAdmin):
+    list_display = ["id", "published_at", "publisher", "title", "url", "created", "modified"]
+    search_fields = ["title", "id"]
 
+@admin.register(ReadEntireArticleClick)
+class ReadEntireArticleClickAdmin(ImportExportMixin, admin.ModelAdmin):
+    list_display = ["id", "participant", "session", "article"]
+
+@admin.register(ArticleSent)
+class ArticleSentAdmin(ImportExportMixin, admin.ModelAdmin):
+    list_display = ["id", "session", "article"]
+
+@admin.register(Reaction)
+class ReactionAdmin(ImportExportMixin, admin.ModelAdmin):
+    list_display = ["id", "participant", "article", "type"]

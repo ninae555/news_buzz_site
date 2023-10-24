@@ -6,7 +6,7 @@ from django.contrib.auth import get_user_model, decorators
 from django.utils.translation import gettext_lazy as _
 
 from news_buzz.users.forms import UserAdminChangeForm, UserAdminCreationForm
-from .models import Participant
+from .models import Participant, Session
 from import_export.admin import ImportExportMixin
 
 User = get_user_model()
@@ -19,6 +19,10 @@ if settings.DJANGO_ADMIN_FORCE_ALLAUTH:
 
 
         
+@admin.register(Session)
+class SessionAdmin(ImportExportMixin,admin.ModelAdmin):
+    list_display = ["id", "participant", "created", "is_active", "end_time"]
+
 @admin.register(Participant)
 class ParticipantAdmin(ImportExportMixin,admin.ModelAdmin):
     list_display = ["id", "participant_id"]
