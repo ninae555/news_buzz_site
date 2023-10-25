@@ -275,6 +275,9 @@ dump.rdb
 news_buzz/media/
 
 .pytest_cache/
+.ipython/
+.envs/*
+!.envs/.local/
 db.sqlite3
 *.sqlite3
 .env

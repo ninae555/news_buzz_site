@@ -8,7 +8,7 @@ DEBUG = True
 # https://docs.djangoproject.com/en/dev/ref/settings/#secret-key
 SECRET_KEY = env(
     "DJANGO_SECRET_KEY",
-    default="rzNbG4bI3XReHymd0qk4PYM7zgfcmYP5DJ0KsPdM0qC7F8uiFKchUZAg5NlBW9Go",
+    default="p4IYYHIqFddPIvW2rKAk7hL7cK1DT9OCjuCYEWtv77r1Plglyb7rI18VXORqWEeI",
 )
 # https://docs.djangoproject.com/en/dev/ref/settings/#allowed-hosts
 ALLOWED_HOSTS = ["localhost", "0.0.0.0", "127.0.0.1"]
@@ -47,7 +47,11 @@ DEBUG_TOOLBAR_CONFIG = {
 }
 # https://django-debug-toolbar.readthedocs.io/en/latest/installation.html#internal-ips
 INTERNAL_IPS = ["127.0.0.1", "10.0.2.2"]
+if env("USE_DOCKER") == "yes":
+    import socket
 
+    hostname, _, ips = socket.gethostbyname_ex(socket.gethostname())
+    INTERNAL_IPS += [".".join(ip.split(".")[:-1] + ["1"]) for ip in ips]
 
 # django-extensions
 # ------------------------------------------------------------------------------
@@ -55,8 +59,7 @@ INTERNAL_IPS = ["127.0.0.1", "10.0.2.2"]
 INSTALLED_APPS += ["django_extensions"]  # noqa: F405
 # Celery
 # ------------------------------------------------------------------------------
-# https://docs.celeryq.dev/en/stable/userguide/configuration.html#task-always-eager
-CELERY_TASK_ALWAYS_EAGER = True
+
 # https://docs.celeryq.dev/en/stable/userguide/configuration.html#task-eager-propagates
 CELERY_TASK_EAGER_PROPAGATES = True
 # Your stuff...
