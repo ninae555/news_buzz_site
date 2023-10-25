@@ -76,7 +76,7 @@ const sendData = (endpoint, jsonData, postProcessFunc, method) => {
 };
 const onReadEntireClick = (btn) => {
   disableButton(btn);
-  sendData("/api/read-entire-article-click/", { article: btn.dataset.id }, () => {
+  sendData("/api/read-entire-article-clicks/", { article: btn.dataset.id }, () => {
     enableButton(btn);
     window.open(btn.dataset.url, "_blank");
   });
