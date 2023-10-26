@@ -36,7 +36,7 @@ class ParticipantViewSet(RetrieveModelMixin, GenericViewSet):
         serializer = SessionSerializer(data=request.data, context={"request": request})
         if not serializer.is_valid():
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        instance = serializer.save()
         # deactivate other active session
-        Session.objects.filter(participant_id=request.data["participant"], is_active=True).update(is_active=False, end_time=timezone.now())
-        serializer.save()
+        Session.objects.filter(participant_id=instance.participant, is_active=True).exclude(id=instance.id).update(is_active=False)
         return Response(status=status.HTTP_201_CREATED, data=serializer.data)

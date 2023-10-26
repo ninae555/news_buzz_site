@@ -27,47 +27,50 @@ def fetch_articles():
     
     for chunk in chunker(list(eligible_publishers.keys()), 500):
         params={
-            "q": "climate change OR global warming OR climate crisis OR sustainability OR renewable energy",
+            # "q": "climate change OR global warming OR climate crisis OR sustainability OR renewable energy",
             "domains": ",".join(chunk),
             "from_param": (timezone.now().date()- timedelta(days=2)).isoformat(),
             "to": timezone.now().date().isoformat(),
             "language":'en',
             "sort_by": "popularity",
+            "page": 0
         }
-        response = newsapi.get_everything(**params)
-        print(response)
-        articles= response["articles"]
-        # Debugging
-        print(f"Type of articles: {type(articles)}")
-        if articles:
-            print(f"First article: {articles[0]}")
-        else:
-            print('No articles found')
-            return
-        articles_to_create = []
-        # Process articles
-        for article in articles:
-            if not Article.objects.filter(url=article['url']).exists():
-                url_components = tldextract.extract(article['url']) 
-                article_domain = url_components.domain + "." + url_components.suffix
-                publisher_id=eligible_publishers.get(article_domain.lower())
-                if publisher_id:
-                    articles_to_create.append(Article(
-                        title=article['title'],
-                        content=article['content'],
-                        author=article['author'],
-                        url=article['url'],
-                        image_url=article['urlToImage'],
-                        published_at=article['publishedAt'],
-                        description=article['description'],
-                        publisher_id=publisher_id
+        while True:
+            params["page"] +=1
+            response = newsapi.get_everything(**params)
+            print(response)
+            articles= response["articles"]
+            # Debugging
+            print(f"Type of articles: {type(articles)}")
+            if articles:
+                print(f"First article: {articles[0]}")
+            else:
+                print('No articles found')
+                break
+            articles_to_create = []
+            # Process articles
+            for article in articles:
+                if not Article.objects.filter(url=article['url']).exists():
+                    url_components = tldextract.extract(article['url']) 
+                    article_domain = url_components.domain + "." + url_components.suffix
+                    publisher_id=eligible_publishers.get(article_domain.lower())
+                    if publisher_id:
+                        articles_to_create.append(Article(
+                            title=article['title'],
+                            content=article['content'],
+                            author=article['author'],
+                            url=article['url'],
+                            image_url=article['urlToImage'],
+                            published_at=article['publishedAt'],
+                            description=article['description'],
+                            publisher_id=publisher_id
 
-                    ))
-                else:
-                    print(f'Error processing article could now found publisher: {article}')
+                        ))
+                    else:
+                        print(f'Error processing article could now found publisher: {article}')
 
-        articles_created = Article.objects.bulk_create(articles_to_create)
-        print(f'articles created: {articles_created}')
+            articles_created = Article.objects.bulk_create(articles_to_create)
+            print(f'articles created: {articles_created}')
 
 
 
