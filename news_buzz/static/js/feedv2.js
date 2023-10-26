@@ -407,22 +407,22 @@ document.addEventListener("DOMContentLoaded", function () {
       return;
     }
     try {
-      const getResponse = await fetch(`/api/participants/${participant}/`);
-      const getData = await getResponse.json();
-      if (!getResponse.ok) {
-        submitButton.disabled = false;
-        submitButton.innerHTML = '<i class="fas fa-sign-in-alt"></i> Login';
-        participantError.textContent = "Invalid credentials";
-        participantError.classList.remove("hidden");
-        return;
-      }
-      const participantId = getData.id;
+      // const getResponse = await fetch(`/api/participants/${participant}/`);
+      // const getData = await getResponse.json();
+      // if (!getResponse.ok) {
+      //   submitButton.disabled = false;
+      //   submitButton.innerHTML = '<i class="fas fa-sign-in-alt"></i> Login';
+      //   participantError.textContent = "Invalid credentials";
+      //   participantError.classList.remove("hidden");
+      //   return;
+      // }
+      // const participantId = getData.id;
       const postResponse = await fetch("/api/participants/login/", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ participant: participantId }),
+        body: JSON.stringify({ participant }),
       });
       const postData = await postResponse.json();
       if (!postResponse.ok) {
@@ -433,7 +433,7 @@ document.addEventListener("DOMContentLoaded", function () {
         return;
       }
       localStorage.setItem("sessionId", postData.id);
-      localStorage.setItem("participantUUID", postData.participant);
+      localStorage.setItem("participantUUID", postData.participant_id);
       localStorage.setItem("participantId", participant);
       document.getElementById("participantIdSpan").textContent = participant;
     } catch (error) {

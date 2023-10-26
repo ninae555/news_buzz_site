@@ -27,7 +27,7 @@ class ArticleViewSet(ListModelMixin, GenericViewSet):
     permission_classes = [IsValidParticipantSession]
     serializer_class = ArticleSerializer
     queryset = (
-        Article.objects.filter(publisher__is_excluded=False)
+        Article.objects.filter(publisher__is_excluded=False, hide=False)
         .values(
             "id",
             "url",

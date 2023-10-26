@@ -4,7 +4,8 @@ log:
 entryPoints:
   web:
     address: ':80'
-
+  websecure:
+      address: ":443"
   flower:
     address: ':5555'
 
@@ -44,3 +45,4 @@ providers:
   file:
     filename: /etc/traefik/traefik.yml
     watch: true
+

@@ -23,6 +23,7 @@ class Article(TimeStampedModel):
     image_url = models.URLField(max_length=1000, null=True, blank=True)
     published_at = models.DateTimeField()
     author = models.CharField(max_length=255, null=True, blank=True)
+    hide = models.BooleanField(default=False)
 
     def __str__(self):
         return self.title
