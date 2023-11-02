@@ -14,6 +14,10 @@ RUN apt-get update && apt-get install --no-install-recommends -y \
   # psycopg2 dependencies
   libpq-dev
 
+# Install the SpaCy model
+RUN pip install spacy && \
+  python -m spacy download en_core_web_lg
+
 # Requirements are installed here to ensure they will be cached.
 COPY ./requirements .
 
@@ -35,7 +39,7 @@ ENV BUILD_ENV ${BUILD_ENVIRONMENT}
 WORKDIR ${APP_HOME}
 
 RUN addgroup --system django \
-    && adduser --system --ingroup django django
+  && adduser --system --ingroup django django
 
 
 # Install required system dependencies
