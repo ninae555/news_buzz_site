@@ -17,7 +17,7 @@ BROAD_KEYWORDS = [
         "carbon-neutral", "biofuel", "geothermal", "hydropower", "tidal energy", 
         "ozone", "melt glacier", "sea-level rise", "greenwash"
     ]
-NLP_MODEL = spacy.load("en_core_web_lg")
+NLP_MODEL = spacy.load("en_core_web_sm")
 MATCHER = PhraseMatcher(NLP_MODEL.vocab, attr='LEMMA')
 MATCHER.add("ClimateChangeKeywords", [NLP_MODEL(keyword) for keyword in BROAD_KEYWORDS])
 
@@ -34,7 +34,7 @@ def chunker(seq, size):
 
 @celery_app.task()
 def fetch_articles():
-    climate_category = Category.objects.get_or_create(name="Climate")
+    climate_category, _ = Category.objects.get_or_create(name="Climate")
     newsapi = NewsApiClient(api_key=settings.NEWS_API_KEY)
     eligible_publishers = dict(Publisher.objects.filter(is_excluded=False).values_list("domain", "id"))    
     params={
@@ -78,7 +78,7 @@ def fetch_articles():
                         publisher_id=publisher_id
                     )
                     articles_to_create.append(article_obj)
-                    if has_broad_keyword(article["content"] + " \n "+ article["description"]):
+                    if has_broad_keyword((article["content"] if article["content"] else "")  + " \n "+ (article["description"] if article["description"] else "")):
                         articles_categories_to_create.append(Article.categories.through(category=climate_category, article=article_obj))
                 else:
                     print(f'Error processing article could not found publisher: {article}')
