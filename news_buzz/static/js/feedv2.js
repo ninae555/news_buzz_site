@@ -1,4 +1,15 @@
-let currentPage = "/api/articles";
+let currentPage = "/api/articles?";
+if (pageName == "feed_high_pc1") {
+  currentPage += new URLSearchParams({
+    min_pc1: 0.75,
+    max_pc1: 1,
+  })
+} else if (pageName == "feed_low_pc1") {
+  currentPage += new URLSearchParams({
+    min_pc1: 0,
+    max_pc1: 0.25,
+  })
+}
 let loadingCurrentPage = false;
 const loginForm = document.getElementById("loginForm");
 const logoutBtn = document.getElementById("logoutBtn");
@@ -71,7 +82,7 @@ const sendData = (endpoint, jsonData, postProcessFunc, method) => {
     })
     .catch((error) => {
       console.error("error from api:", error);
-        performLogout();
+      performLogout();
     });
 };
 const onReadEntireClick = (btn) => {
@@ -150,8 +161,7 @@ const loadArticles = () => {
           const articleHTML = `
             <div class="rounded-sm overflow-hidden bg-white shadow-sm mt-10">
             <div class="">
-            <img src="${
-              article.image_url
+            <img src="${article.image_url
             }" alt="image could not be loaded" class="w-full h-96 object-cover">
             </div>
             <div class="p-4 pb-5">
@@ -170,14 +180,14 @@ const loadArticles = () => {
                         <i class="far fa-clock" aria-hidden="true"></i>
                     </span>
                     ${new Date(article.published_at).toLocaleDateString(
-                      "en-us",
-                      {
-                        weekday: "long",
-                        year: "numeric",
-                        month: "short",
-                        day: "numeric",
-                      }
-                    )}
+              "en-us",
+              {
+                weekday: "long",
+                year: "numeric",
+                month: "short",
+                day: "numeric",
+              }
+            )}
                 </div>
             </div>
             <p class="text-gray-600 text-md mt-5">
@@ -187,74 +197,60 @@ const loadArticles = () => {
             <!-- Reaction Bar -->
             <div class="flex justify-between items-center mt-4">
                 <div class="flex space-x-2">
-                <button onclick="onReactionClick(this)" data-articlereaction="${
-                  article.reaction
-                }" data-type="L" data-rid="${article.id}" 
-                class="group text-gray-400 ${
-                  article.reaction === "L"
-                    ? "text-blue-600"
-                    : "hover:text-blue-600"
-                } text-lg">
+                <button onclick="onReactionClick(this)" data-articlereaction="${article.reaction
+            }" data-type="L" data-rid="${article.id}" 
+                class="group text-gray-400 ${article.reaction === "L"
+              ? "text-blue-600"
+              : "hover:text-blue-600"
+            } text-lg">
             <i class="fas fa-thumbs-up fa-lg"></i><span>Like</span>
         </button>
-        <button onclick="onReactionClick(this)" data-articlereaction="${
-          article.reaction
-        }" data-type="LV" data-rid="${article.id}" 
-                class="group text-gray-400 ${
-                  article.reaction === "LV"
-                    ? "text-red-600"
-                    : "hover:text-red-600"
-                }">
+        <button onclick="onReactionClick(this)" data-articlereaction="${article.reaction
+            }" data-type="LV" data-rid="${article.id}" 
+                class="group text-gray-400 ${article.reaction === "LV"
+              ? "text-red-600"
+              : "hover:text-red-600"
+            }">
             <i class="fas fa-heart fa-lg"></i><span>Love</span>
         </button>
-        <button onclick="onReactionClick(this)" data-articlereaction="${
-          article.reaction
-        }" data-type="C" data-rid="${article.id}" 
-                class="group text-gray-400 ${
-                  article.reaction === "C"
-                    ? "text-yellow-600"
-                    : "hover:text-yellow-600"
-                }">
+        <button onclick="onReactionClick(this)" data-articlereaction="${article.reaction
+            }" data-type="C" data-rid="${article.id}" 
+                class="group text-gray-400 ${article.reaction === "C"
+              ? "text-yellow-600"
+              : "hover:text-yellow-600"
+            }">
             <i class="fas fa-face-grin-hearts fa-lg"></i><span>Care</span>
         </button>
-        <button onclick="onReactionClick(this)" data-articlereaction="${
-          article.reaction
-        }" data-type="W" data-rid="${article.id}" 
-                class="group text-gray-400 ${
-                  article.reaction === "W"
-                    ? "text-purple-600"
-                    : "hover:text-purple-600"
-                }">
+        <button onclick="onReactionClick(this)" data-articlereaction="${article.reaction
+            }" data-type="W" data-rid="${article.id}" 
+                class="group text-gray-400 ${article.reaction === "W"
+              ? "text-purple-600"
+              : "hover:text-purple-600"
+            }">
             <i class="fas fa-surprise fa-lg"></i><span>Wow</span>
         </button>
-        <button onclick="onReactionClick(this)" data-articlereaction="${
-          article.reaction
-        }" data-type="H" data-rid="${article.id}" 
-                class="group text-gray-400 ${
-                  article.reaction === "H"
-                    ? "text-green-600"
-                    : "hover:text-green-600"
-                }">
+        <button onclick="onReactionClick(this)" data-articlereaction="${article.reaction
+            }" data-type="H" data-rid="${article.id}" 
+                class="group text-gray-400 ${article.reaction === "H"
+              ? "text-green-600"
+              : "hover:text-green-600"
+            }">
             <i class="fas fa-laugh fa-lg"></i><span>Haha</span>
         </button>
-        <button onclick="onReactionClick(this)" data-articlereaction="${
-          article.reaction
-        }" data-type="S" data-rid="${article.id}" 
-                class="group text-gray-400 ${
-                  article.reaction === "S"
-                    ? "text-blue-400"
-                    : "hover:text-blue-400"
-                }">
+        <button onclick="onReactionClick(this)" data-articlereaction="${article.reaction
+            }" data-type="S" data-rid="${article.id}" 
+                class="group text-gray-400 ${article.reaction === "S"
+              ? "text-blue-400"
+              : "hover:text-blue-400"
+            }">
             <i class="fas fa-sad-tear fa-lg"></i><span>Sad</span>
         </button>
-        <button onclick="onReactionClick(this)" data-articlereaction="${
-          article.reaction
-        }" data-type="A" data-rid="${article.id}" 
-                class="group text-gray-400 ${
-                  article.reaction === "A"
-                    ? "text-red-400"
-                    : "hover:text-red-400"
-                }">
+        <button onclick="onReactionClick(this)" data-articlereaction="${article.reaction
+            }" data-type="A" data-rid="${article.id}" 
+                class="group text-gray-400 ${article.reaction === "A"
+              ? "text-red-400"
+              : "hover:text-red-400"
+            }">
             <i class="fas fa-angry fa-lg"></i><span>Angry</span>
         </button>
         
@@ -295,11 +291,9 @@ const loadArticles = () => {
             </div> -->
             
             <!-- Read More Button -->
-            <button class="mt-4 bg-blue-500 text-white rounded p-2 read-entire-article-btn" data-url="${
-              article.url
-            }" data-id=${
-            article.id
-          } onclick="onReadEntireClick(this)">Read Entire Article</button>
+            <button class="mt-4 bg-blue-500 text-white rounded p-2 read-entire-article-btn" data-url="${article.url
+            }" data-id=${article.id
+            } onclick="onReadEntireClick(this)">Read Entire Article</button>
             </div>
             </div>
             `;

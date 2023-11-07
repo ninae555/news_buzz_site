@@ -10,7 +10,7 @@ from rest_framework.decorators import action
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
-from news_buzz.articles.models import Article
+from news_buzz.articles.models import Article, Category
 from .serializers import ArticleSerializer
 from news_buzz.articles.models import Reaction, Comment, ReadEntireArticleClick, ArticleSent
 from .serializers import (
@@ -20,12 +20,15 @@ from .serializers import (
 )
 from django.db.models import OuterRef, Subquery
 from .permissions import IsValidParticipantSession
+from .filters import ArticlePublisherPC1Filter
+from rest_framework.settings import api_settings
 
 
 class ArticleViewSet(ListModelMixin, GenericViewSet):
     authentication_classes = []
     permission_classes = [IsValidParticipantSession]
     serializer_class = ArticleSerializer
+    filter_backends = api_settings.DEFAULT_FILTER_BACKENDS + [ArticlePublisherPC1Filter]
     queryset = (
         Article.objects.filter(publisher__is_excluded=False, hide=False)
         .values(
@@ -42,9 +45,10 @@ class ArticleViewSet(ListModelMixin, GenericViewSet):
     )
 
     def get_queryset(self) -> QuerySet:
+        climate_category, _ = Category.objects.get_or_create(name="Climate")
         return (
             super()
-            .get_queryset()
+            .get_queryset() #.filter(categories=climate_category)
             .annotate(
                 reaction=Subquery(
                     Reaction.objects.filter(
@@ -53,7 +57,7 @@ class ArticleViewSet(ListModelMixin, GenericViewSet):
                     ).values("type")[:1]
                 )
             )
-        )
+        ).distinct()
 
     def list(self, request: Request, *args: Any, **kwargs: Any) -> Response:
         queryset = self.filter_queryset(self.get_queryset())

@@ -18,6 +18,9 @@
       href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
       rel="stylesheet"
     />
+    <script>
+      const pageName = "{{request.resolver_match.url_name}}";
+    </script>
     <script defer src="{% static 'js/feedv2.js' %}"></script>
     <style>
       .loader {
@@ -147,7 +150,8 @@
         <div class="container mx-auto px-4 flex flex-wrap justify-center">
           <!-- Main content - width and spacing updated -->
           <div class="xl:w-8/12 lg:w-10/12 w-full" id="articleContainer">
-            {% comment %} <!-- Post view -->
+            {% comment %}
+            <!-- Post view -->
             <div class="rounded-sm overflow-hidden bg-white shadow-sm">
               <div class="">
                 <img src="" class="w-full h-96 object-cover" />
@@ -278,7 +282,8 @@
                 </button>
               </div>
             </div>
-            <!-- Post view  end--> {% endcomment %}
+            <!-- Post view  end-->
+            {% endcomment %}
           </div>
         </div>
         <!-- Loader -->
@@ -287,7 +292,6 @@
         </div>
       </main>
     </div>
-    <script>
-    </script>
+    <script></script>
   </body>
 </html>
