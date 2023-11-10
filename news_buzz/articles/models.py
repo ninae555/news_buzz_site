@@ -10,7 +10,11 @@ class Publisher(TimeStampedModel):
 
     def __str__(self):
         return self.domain
+class Category(TimeStampedModel):
+    name = models.CharField(max_length=255, unique=True)
 
+    def __str__(self):
+        return self.name
 
 class Article(TimeStampedModel):
     title = models.CharField(max_length=1000)
@@ -23,6 +27,8 @@ class Article(TimeStampedModel):
     image_url = models.URLField(max_length=1000, null=True, blank=True)
     published_at = models.DateTimeField()
     author = models.CharField(max_length=255, null=True, blank=True)
+    hide = models.BooleanField(default=False)
+    categories = models.ManyToManyField(Category, blank=True)
 
     def __str__(self):
         return self.title

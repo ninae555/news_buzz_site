@@ -1,0 +1,297 @@
+{% load static %}
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>News Buzz</title>
+    <script
+      src="https://kit.fontawesome.com/7ce49a123c.js"
+      crossorigin="anonymous"
+    ></script>
+    <link rel="preconnect" href="https://fonts.gstatic.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&amp;family=Roboto:wght@400;500;700&amp;display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
+      rel="stylesheet"
+    />
+    <script>
+      const pageName = "{{request.resolver_match.url_name}}";
+    </script>
+    <script defer src="{% static 'js/feedv2.js' %}"></script>
+    <style>
+      .loader {
+        border: 5px solid #f3f3f3;
+        border-top: 5px solid #3498db;
+        border-radius: 50%;
+        width: 50px;
+        height: 50px;
+        animation: spin 2s linear infinite;
+      }
+
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+    </style>
+  </head>
+
+  <body class="font-poppins text-gray-600">
+    <div
+      id="loginPage"
+      class="bg-gray-100 h-screen flex justify-center items-center hidden"
+    >
+      <div class="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
+        <!-- logo -->
+        <div class="flex justify-center">
+          <div
+            class="text-3xl font-semibold text-blue-700 flex items-center mb-6"
+          >
+            <i class="fas fa-newspaper mr-2"></i> News Buzz
+          </div>
+        </div>
+        <form id="loginForm" class="space-y-4">
+          <div>
+            <label
+              for="participant"
+              class="block text-sm font-medium text-gray-600"
+              >Enter your Participant ID</label
+            >
+            <input
+              type="text"
+              id="participant"
+              name="participant"
+              class="mt-1 p-2 w-full rounded border"
+            />
+            <div
+              id="participantError"
+              class="text-red-500 text-xs mt-1 hidden"
+            ></div>
+          </div>
+
+          <!-- <div>
+                    <label for="password" class="block text-sm font-medium text-gray-600">Password</label>
+                    <input type="password" id="password" name="password" class="mt-1 p-2 w-full rounded border">
+                </div> -->
+
+          <div>
+            <button
+              type="submit"
+              class="bg-blue-500 text-white p-2 w-full rounded hover:bg-blue-600"
+            >
+              <i class="fas fa-sign-in-alt"></i> Login
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+    <div id="feedPage" class="hidden">
+      <!-- navbar -->
+      <nav class="shadow-sm">
+        <div
+          class="container px-4 mx-auto flex items-center justify-between py-3"
+        >
+          <!-- logo -->
+          <div class="text-3xl font-semibold text-blue-700 flex items-center">
+            <i class="fas fa-newspaper mr-2"></i> News Buzz
+          </div>
+          <!-- logo end -->
+          <!-- Username Dropdown -->
+          <div class="relative inline-block text-left">
+            <a
+              href="#"
+              class="text-sm font-semibold hover:text-blue-500 transition flex items-center focus:outline-none focus:border focus:border-blue-300 rounded"
+              id="dropdownUser"
+            >
+              <span class="mr-2">
+                <i class="far fa-user" aria-hidden="true"></i>
+              </span>
+              <span id="participantIdSpan"></span>
+              <i class="fas fa-chevron-down ml-2"></i>
+            </a>
+            <!-- Dropdown menu -->
+            <div
+              class="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5"
+            >
+              <div
+                class="py-1"
+                role="menu"
+                aria-orientation="vertical"
+                aria-labelledby="options-menu"
+              >
+                <!-- <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900"
+                            role="menuitem">
+                            View Profile
+                        </a> -->
+                <a
+                  href="#"
+                  id="logoutBtn"
+                  class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900"
+                  role="menuitem"
+                >
+                  Logout
+                </a>
+              </div>
+            </div>
+          </div>
+          <!-- Username end -->
+        </div>
+      </nav>
+      <!-- main -->
+      <main class="pt-12 bg-gray-100 pb-12">
+        <div class="container mx-auto px-4 flex flex-wrap justify-center">
+          <!-- Main content - width and spacing updated -->
+          <div class="xl:w-8/12 lg:w-10/12 w-full" id="articleContainer">
+            {% comment %}
+            <!-- Post view -->
+            <div class="rounded-sm overflow-hidden bg-white shadow-sm">
+              <div class="">
+                <img src="" class="w-full h-96 object-cover" />
+              </div>
+              <div class="p-4 pb-5">
+                <!-- Article Header -->
+                <h2
+                  class="block text-2xl font-semibold text-gray-700 font-roboto"
+                >
+                  Lorem, ipsum dolor sit amet consectetur adipisicing elit. Iddo
+                  loremque, totam architecto odit pariatur Lorem ips dolor.
+                </h2>
+                <div class="mt-2 flex space-x-4">
+                  <div class="flex text-gray-400 text-sm items-center">
+                    <span class="mr-2 text-xs"> Published by: </span>
+                    xyznews.com
+                  </div>
+                  <div class="flex text-gray-400 text-sm items-center">
+                    <span class="mr-2 text-xs">
+                      <i class="far fa-clock" aria-hidden="true"></i>
+                    </span>
+                    June 1, 2023
+                  </div>
+                </div>
+
+                <p class="text-gray-600 text-md mt-5">
+                  Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                  Blanditiis et sunt saepe accusamus eum ex sint est neque
+                  provident tempore, minus laborum repudiandae vitae temporibus
+                  nesciunt, sed enim quo harum a id, alias maiores! Incidunt
+                  iusto minus explicabo itaque iure recusandae
+                </p>
+
+                <!-- Reaction Bar -->
+                <div class="flex justify-between items-center mt-4">
+                  <div class="flex space-x-2">
+                    <button
+                      class="group text-gray-400 hover:text-blue-600 text-lg"
+                    >
+                      <i class="fas fa-thumbs-up fa-lg"></i
+                      ><span class=""> Like</span>
+                    </button>
+                    <button class="group text-gray-400 hover:text-red-600">
+                      <i class="fas fa-lg fa-heart"></i
+                      ><span class=""> Love</span>
+                    </button>
+                    <button class="group text-gray-400 hover:text-yellow-600">
+                      <i class="fas fa-lg fa-face-grin-hearts"></i
+                      ><span class=""> Care</span>
+                    </button>
+                    <button class="group text-gray-400 hover:text-purple-600">
+                      <i class="fas fa-lg fa-surprise"></i
+                      ><span class=""> Wow</span>
+                    </button>
+                    <button class="group text-gray-400 hover:text-green-600">
+                      <i class="fas fa-lg fa-laugh"></i
+                      ><span class=""> Haha</span>
+                    </button>
+                    <button class="group text-gray-400 hover:text-blue-400">
+                      <i class="fas fa-lg fa-sad-tear"></i
+                      ><span class=""> Sad</span>
+                    </button>
+                    <button class="group text-gray-400 hover:text-red-400">
+                      <i class="fas fa-lg fa-angry"></i
+                      ><span class=""> Angry</span>
+                    </button>
+                  </div>
+                  <div>
+                    <button
+                      id="shareBtn"
+                      class="group text-gray-400 hover:text-blue-600"
+                    >
+                      <i class="fas fa-share-nodes fa-lg"></i
+                      ><span class="group-hover:inline"> Share</span>
+                    </button>
+                    <!-- Share Popup -->
+                    <div
+                      id="sharePopup"
+                      class="hidden absolute w-40 rounded shadow-lg bg-white p-4 flex flex-col items-center"
+                    >
+                      <button
+                        class="group text-center mb-2 text-gray-400 hover:text-blue-600"
+                      >
+                        <i class="fab fa-lg fa-facebook"></i
+                        ><span class="group-hover:inline"> Facebook</span>
+                      </button>
+                      <button
+                        class="group text-center mb-2 text-gray-400 hover:text-pink-600"
+                      >
+                        <i class="fab fa-lg fa-instagram"></i
+                        ><span class="group-hover:inline"> Instagram</span>
+                      </button>
+                      <button
+                        class="group text-center mb-2 text-gray-400 hover:text-blue-700"
+                      >
+                        <i class="fab fa-lg fa-linkedin"></i
+                        ><span class="group-hover:inline"> LinkedIn</span>
+                      </button>
+                      <button
+                        id="copy-link"
+                        class="group text-center text-gray-400 hover:text-gray-600"
+                      >
+                        <i class="fas fa-lg fa-copy"></i
+                        ><span class="group-hover:inline"> Copy Link</span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Comment Section -->
+                <div class="mt-5">
+                  <input
+                    type="text"
+                    placeholder="Add a comment"
+                    class="p-2 w-full rounded border"
+                  />
+                  <div class="mt-3">
+                    <h4 class="text-lg font-semibold">Comments:</h4>
+                    <p class="text-sm mt-2">User1: Great article!</p>
+                    <p class="text-sm mt-2">User2: Thanks for sharing this.</p>
+                    <!-- Add more comments here -->
+                  </div>
+                </div>
+
+                <!-- Read More Button -->
+                <button class="mt-4 bg-blue-500 text-white rounded p-2">
+                  Read Entire Article
+                </button>
+              </div>
+            </div>
+            <!-- Post view  end-->
+            {% endcomment %}
+          </div>
+        </div>
+        <!-- Loader -->
+        <div id="loader" class="flex justify-center my-8 hidden">
+          <div class="loader"></div>
+        </div>
+      </main>
+    </div>
+    <script></script>
+  </body>
+</html>

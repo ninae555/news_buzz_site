@@ -44,14 +44,14 @@
             </div>
             <form id="loginForm" class="space-y-4">
                 <div>
-                    <label for="username" class="block text-sm font-medium text-gray-600">Username</label>
-                    <input type="text" id="username" name="username" class="mt-1 p-2 w-full rounded border">
+                    <label for="participant" class="block text-sm font-medium text-gray-600">Participant</label>
+                    <input type="text" id="participant" name="participant" class="mt-1 p-2 w-full rounded border">
                 </div>
 
-                <div>
+                <!-- <div>
                     <label for="password" class="block text-sm font-medium text-gray-600">Password</label>
                     <input type="password" id="password" name="password" class="mt-1 p-2 w-full rounded border">
-                </div>
+                </div> -->
 
                 <div>
                     <button type="submit" class="bg-blue-500 text-white p-2 w-full rounded hover:bg-blue-600">
@@ -425,10 +425,10 @@
                 e.preventDefault();
                 submitButton.disabled = true;
                 submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Loading';
-                const username = document.getElementById('username').value;
-                const password = document.getElementById('password').value;
-                console.log("Username:", username);
-                console.log("Password:", password);
+                const participant = document.getElementById('participant').value;
+                // const password = document.getElementById('password').value;
+                console.log("Username:", participant);
+                // console.log("Password:", password);
                 await new Promise(resolve => setTimeout(resolve, 2000));
                 loginPage.classList.add('hidden');
                 feedPage.classList.remove('hidden');

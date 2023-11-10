@@ -9,13 +9,14 @@ from rest_framework.authtoken.views import obtain_auth_token
 from news_buzz.users.views import participant_login
 
 urlpatterns = [
-    path("", TemplateView.as_view(template_name="pages/home.html"), name="home"),
-    path("about/", TemplateView.as_view(template_name="pages/about.html"), name="about"),
+    path("kZ1lTZJmXE", TemplateView.as_view(template_name="pages/feed.html"), name="feed_high_pc1"),
+    path("r72iMRFUUE", TemplateView.as_view(template_name="pages/feed.html"), name="feed_low_pc1"),
+    # path("about/", TemplateView.as_view(template_name="pages/about.html"), name="about"),
     # Django Admin, use {% url 'admin:index' %}
     path(settings.ADMIN_URL, admin.site.urls),
     # User management
-    path('participant-login/', participant_login, name='participant-login'),
-    path("accounts/", include("allauth.urls")),
+    # path('participant-login/', participant_login, name='participant-login'),
+    # path("accounts/", include("allauth.urls")),
     # Your stuff: custom urls includes go here
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 

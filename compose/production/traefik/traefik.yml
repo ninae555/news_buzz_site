@@ -1,0 +1,48 @@
+log:
+  level: INFO
+
+entryPoints:
+  web:
+    address: ':80'
+  websecure:
+      address: ":443"
+  flower:
+    address: ':5555'
+
+http:
+  routers:
+    web-router:
+      rule: 'HostRegexp(`{host:.+}`)'
+      entryPoints:
+        - web
+      middlewares:
+        - csrf
+      service: django
+
+    flower-router:
+      rule: 'HostRegexp(`{host:.+}`)'
+      entryPoints:
+        - flower
+      service: flower
+
+  middlewares:
+    csrf:
+      headers:
+        hostsProxyHeaders: ['X-CSRFToken']
+
+  services:
+    django:
+      loadBalancer:
+        servers:
+          - url: http://django:5000
+
+    flower:
+      loadBalancer:
+        servers:
+          - url: http://flower:5555
+
+providers:
+  file:
+    filename: /etc/traefik/traefik.yml
+    watch: true
+

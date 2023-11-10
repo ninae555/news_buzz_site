@@ -4,9 +4,9 @@ from rest_framework.decorators import action
 from rest_framework.mixins import ListModelMixin, RetrieveModelMixin, UpdateModelMixin
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
-
-from .serializers import UserSerializer
-
+from django.utils import timezone
+from .serializers import UserSerializer, ParticipantSerializer, SessionSerializer
+from news_buzz.users.models import Participant, Session
 User = get_user_model()
 
 
@@ -23,3 +23,20 @@ class UserViewSet(RetrieveModelMixin, ListModelMixin, UpdateModelMixin, GenericV
     def me(self, request):
         serializer = UserSerializer(request.user, context={"request": request})
         return Response(status=status.HTTP_200_OK, data=serializer.data)
+
+class ParticipantViewSet(RetrieveModelMixin, GenericViewSet):
+    authentication_classes = []
+    permission_classes = []
+    serializer_class = ParticipantSerializer
+    queryset = Participant.objects.filter(is_active=True)
+    lookup_field = "participant_id"
+
+    @action(detail=False, methods=["POST"])
+    def login(self, request):
+        serializer = SessionSerializer(data=request.data, context={"request": request})
+        if not serializer.is_valid():
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        instance = serializer.save()
+        # deactivate other active session
+        Session.objects.filter(participant_id=instance.participant, is_active=True).exclude(id=instance.id).update(is_active=False)
+        return Response(status=status.HTTP_201_CREATED, data=serializer.data)
