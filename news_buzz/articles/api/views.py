@@ -23,6 +23,8 @@ from .permissions import IsValidParticipantSession
 from .filters import ArticlePublisherPC1Filter
 from rest_framework.settings import api_settings
 
+# from django.contrib.postgres.aggregates import ArrayAgg
+
 
 class ArticleViewSet(ListModelMixin, GenericViewSet):
     authentication_classes = []
@@ -45,11 +47,11 @@ class ArticleViewSet(ListModelMixin, GenericViewSet):
     )
 
     def get_queryset(self) -> QuerySet:
-        climate_category, _ = Category.objects.get_or_create(name="Climate")
         return (
             super()
-            .get_queryset() #.filter(categories=climate_category)
+            .get_queryset()
             .annotate(
+                # acategories=ArrayAgg("categories"),
                 reaction=Subquery(
                     Reaction.objects.filter(
                         participant_id=self.request.participant_session.participant.id,
@@ -57,20 +59,45 @@ class ArticleViewSet(ListModelMixin, GenericViewSet):
                     ).values("type")[:1]
                 )
             )
-        ).distinct()
+            .distinct()
+        )
 
     def list(self, request: Request, *args: Any, **kwargs: Any) -> Response:
-        queryset = self.filter_queryset(self.get_queryset())
+        climate_category, _ = Category.objects.get_or_create(name="Climate")
+        climate_articles = list(
+            self.filter_queryset(self.get_queryset().filter(categories__id__in=[climate_category.id]))[:5000]
+        )
+        other_articles = list(
+            self.get_queryset()
+            .filter(publisher__pc1__gte=0.6, publisher__pc1__lte=1)
+            .exclude(categories__id__in=[climate_category.id])[:5000]
+        )
+        climate_articles.sort(key=lambda x: x["published_at"], reverse=True)
+        other_articles.sort(key=lambda x: x["published_at"], reverse=True)
+        articles = []
+        while climate_articles or other_articles:
+            articles_combined = []
+            if climate_articles:
+                articles_combined.extend(climate_articles[:2])
+                climate_articles = climate_articles[2:]
+            if other_articles:
+                articles_combined.extend(other_articles[:2])
+                other_articles = other_articles[2:]
+            articles_combined.sort(key=lambda x: x["published_at"], reverse=True)
+            articles.extend(articles_combined)
 
-        page = self.paginate_queryset(queryset)
+        page = self.paginate_queryset(articles)
         if page is not None:
-            ArticleSent.objects.bulk_create([ArticleSent(article_id=article["id"], session_id=request.participant_session.id) for article in page])
+            ArticleSent.objects.bulk_create(
+                [ArticleSent(article_id=article["id"], session_id=request.participant_session.id) for article in page]
+            )
 
             serializer = self.get_serializer(page, many=True)
             return self.get_paginated_response(serializer.data)
 
-        serializer = self.get_serializer(queryset, many=True)
+        serializer = self.get_serializer(self.get_queryset(), many=True)
         return Response(serializer.data)
+
 
 class ReactionViewSet(CreateModelMixin, GenericViewSet):
     authentication_classes = []
@@ -83,12 +110,13 @@ class ReactionViewSet(CreateModelMixin, GenericViewSet):
         serializer = ReactionSerializer(data=request.data, context={"request": request})
         if not serializer.is_valid():
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        Reaction.objects.filter(participant_id=request.data["participant"], article_id=request.data["article"]).delete()
+        Reaction.objects.filter(
+            participant_id=request.data["participant"], article_id=request.data["article"]
+        ).delete()
         return Response(status=status.HTTP_201_CREATED, data={"message": "Reaction deleted successfully."})
 
-class CommentViewSet(
-    ListModelMixin, CreateModelMixin, DestroyModelMixin, GenericViewSet
-):
+
+class CommentViewSet(ListModelMixin, CreateModelMixin, DestroyModelMixin, GenericViewSet):
     authentication_classes = []
     permission_classes = []
     queryset = Comment.objects.all()

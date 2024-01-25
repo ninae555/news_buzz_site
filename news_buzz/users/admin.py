@@ -17,15 +17,15 @@ if settings.DJANGO_ADMIN_FORCE_ALLAUTH:
     admin.site.login = decorators.login_required(admin.site.login)  # type: ignore[method-assign]
 
 
-
-        
 @admin.register(Session)
-class SessionAdmin(ImportExportMixin,admin.ModelAdmin):
+class SessionAdmin(ImportExportMixin, admin.ModelAdmin):
     list_display = ["id", "participant", "created", "is_active", "end_time"]
 
+
 @admin.register(Participant)
-class ParticipantAdmin(ImportExportMixin,admin.ModelAdmin):
-    list_display = ["id", "participant_id"]
+class ParticipantAdmin(ImportExportMixin, admin.ModelAdmin):
+    list_display = ["id", "participant_id", "created", "modified"]
+
 
 @admin.register(User)
 class UserAdmin(auth_admin.UserAdmin):

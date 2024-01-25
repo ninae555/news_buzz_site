@@ -46,7 +46,7 @@ function getTextColor(reactionType, isCurrentReaction) {
     : `hover:text-${colorMappings[reactionType]}`;
 }
 const performLogout = () => {
-  localStorage.clear();
+  sessionStorage.clear();
   document.querySelector("#articleContainer").innerHTML = "";
   currentPage = "/api/articles";
   loginForm.reset();
@@ -57,8 +57,8 @@ const performLogout = () => {
   dropdownMenu.style.display = "none";
 };
 const sendData = (endpoint, jsonData, postProcessFunc, method) => {
-  jsonData.participant = localStorage.getItem("participantUUID");
-  jsonData.session = localStorage.getItem("sessionId");
+  jsonData.participant = sessionStorage.getItem("participantUUID");
+  jsonData.session = sessionStorage.getItem("sessionId");
   console.log("jsonData");
   console.log(jsonData);
   fetch(endpoint, {
@@ -145,7 +145,7 @@ const loadArticles = () => {
     const container = document.querySelector("#articleContainer");
     fetch(currentPage, {
       headers: {
-        session: localStorage.getItem("sessionId"),
+        session: sessionStorage.getItem("sessionId"),
       },
     })
       .then((response) => {
@@ -337,12 +337,12 @@ function isValidUUIDv4(uuid) {
 }
 document.addEventListener("DOMContentLoaded", function () {
   if (
-    isValidUUIDv4(localStorage.getItem("sessionId")) &&
-    isValidUUIDv4(localStorage.getItem("participantUUID")) &&
-    localStorage.getItem("participantId")
+    isValidUUIDv4(sessionStorage.getItem("sessionId")) &&
+    isValidUUIDv4(sessionStorage.getItem("participantUUID")) &&
+    sessionStorage.getItem("participantId")
   ) {
     document.getElementById("participantIdSpan").textContent =
-      localStorage.getItem("participantId");
+      sessionStorage.getItem("participantId");
     feedPage.classList.remove("hidden");
     feedLoad();
   } else {
@@ -426,9 +426,9 @@ document.addEventListener("DOMContentLoaded", function () {
         participantError.classList.remove("hidden");
         return;
       }
-      localStorage.setItem("sessionId", postData.id);
-      localStorage.setItem("participantUUID", postData.participant_id);
-      localStorage.setItem("participantId", participant);
+      sessionStorage.setItem("sessionId", postData.id);
+      sessionStorage.setItem("participantUUID", postData.participant_id);
+      sessionStorage.setItem("participantId", participant);
       document.getElementById("participantIdSpan").textContent = participant;
     } catch (error) {
       submitButton.disabled = false;
