@@ -41,6 +41,11 @@
           transform: rotate(360deg);
         }
       }
+
+      /* Change "Reddit" link color on hover */
+      .reddit-share:hover {
+        color: #ff4500;
+      }
     </style>
   </head>
 
@@ -75,6 +80,23 @@
               id="participantError"
               class="text-red-500 text-xs mt-1 hidden"
             ></div>
+            {% comment %}
+            <label
+              for="first_name"
+              class="block text-sm font-medium text-gray-600 mt-4"
+              >Enter your First Name</label
+            >
+            <input
+              type="text"
+              id="first_name"
+              name="first_name"
+              class="mt-1 p-2 w-full rounded border"
+            />
+            <div
+              id="first_nameError"
+              class="text-red-500 text-xs mt-1 hidden"
+            ></div>
+            {% endcomment %}
           </div>
 
           <!-- <div>
@@ -150,7 +172,8 @@
         <div class="container mx-auto px-4 flex flex-wrap justify-center">
           <!-- Main content - width and spacing updated -->
           <div class="xl:w-8/12 lg:w-10/12 w-full" id="articleContainer">
-            {% comment %}
+            {% comment %} {% endcomment %}
+
             <!-- Post view -->
             <div class="rounded-sm overflow-hidden bg-white shadow-sm">
               <div class="">
@@ -221,8 +244,8 @@
                   </div>
                   <div>
                     <button
-                      id="shareBtn"
-                      class="group text-gray-400 hover:text-blue-600"
+                      data-popup="sharePopup"
+                      class="share-btn group text-gray-400 hover:text-blue-600"
                     >
                       <i class="fas fa-share-nodes fa-lg"></i
                       ><span class="group-hover:inline"> Share</span>
@@ -283,7 +306,6 @@
               </div>
             </div>
             <!-- Post view  end-->
-            {% endcomment %}
           </div>
         </div>
         <!-- Loader -->

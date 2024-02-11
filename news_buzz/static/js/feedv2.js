@@ -45,6 +45,30 @@ function getTextColor(reactionType, isCurrentReaction) {
     ? `text-${colorMappings[reactionType]}`
     : `hover:text-${colorMappings[reactionType]}`;
 }
+
+function unsecuredCopyToClipboard(text) {
+  const textArea = document.createElement("textarea");
+
+  // Style the textarea to be invisible and out of the viewport
+  textArea.style.position = 'fixed'; // Prevents scrolling to the bottom
+  textArea.style.opacity = '0'; // Makes it invisible
+  textArea.style.left = '-9999px'; // Positions it out of the viewport
+  textArea.style.top = '0'; // Keeps it at the top to avoid any potential scroll
+
+  textArea.value = text;
+  document.body.appendChild(textArea);
+  textArea.focus();
+  textArea.select();
+
+  try {
+    document.execCommand('copy');
+  } catch (err) {
+    console.error('Unable to copy to clipboard', err);
+  }
+
+  document.body.removeChild(textArea);
+}
+
 const performLogout = () => {
   sessionStorage.clear();
   document.querySelector("#articleContainer").innerHTML = "";
@@ -256,29 +280,32 @@ const loadArticles = () => {
         
                 </div>
                 <div>
-            
-                    <!--<button  class="share-btn group text-gray-400 hover:text-blue-600"><i
+                    <button data-popup="sharePopup${article.id}" class="share-btn group text-gray-400 hover:text-blue-600"><i
                             class="fas fa-share-nodes fa-lg"></i><span class="group-hover:inline">
-                            Share</span></button>-->
+                            Share</span></button>
                     <!-- Share Popup -->
-                    <!--<div
-                        class="share-popup hidden absolute w-40 rounded shadow-lg bg-white p-4 flex flex-col items-center">
-                        <button class="group text-center mb-2 text-gray-400 hover:text-blue-600"><i
+                    <div id="sharePopup${article.id}"
+                        class="popup-btn hidden absolute w-40 rounded shadow-lg bg-white p-4 flex flex-col items-center">
+                        <a href="https://www.facebook.com/share.php?u=${article.url}" target="blank" class="fb-share group text-center mb-2 text-gray-400 hover:text-blue-600"><i
                                 class="fab fa-lg fa-facebook"></i><span class="group-hover:inline">
-                                Facebook</span></button>
-                        <button class="group text-center mb-2 text-gray-400 hover:text-pink-600"><i
-                                class="fab fa-lg fa-instagram"></i><span class="group-hover:inline">
-                                Instagram</span></button>
-                        <button class="group text-center mb-2 text-gray-400 hover:text-blue-700"><i
+                                Facebook</span></a>
+                        <a href="https://www.linkedin.com/sharing/share-offsite/?url=${article.url}" target="blank" class="linkedin-share group text-center mb-2 text-gray-400 hover:text-blue-700"><i
                                 class="fab fa-lg fa-linkedin"></i><span class="group-hover:inline">
-                                LinkedIn</span></button>
-                        <button class="copy-link group text-center text-gray-400 hover:text-gray-600"><i
+                                LinkedIn</span></a>
+                      <a href="https://twitter.com/intent/tweet?url=${article.url}" target="blank" class="twitter-share group text-center mb-2 text-gray-400 hover:text-gray-800"><i
+                              class="fab fa-lg fa-square-x-twitter"></i><span class="group-hover:inline">
+                              Twitter</span></a>
+                      <a href="https://www.reddit.com/submit?url=${article.url}" target="blank" class="reddit-share group text-center mb-2 text-gray-400"><i
+                                                  class="fab fa-lg fa-reddit"></i><span class="group-hover:inline">
+                                                  Reddit</span></a>
+
+                        <button data-link="${article.url}" class="copy-link group text-center text-gray-400 hover:text-gray-600"><i
                                 class="fas fa-lg fa-copy"></i><span class="group-hover:inline"> Copy
                                 Link</span></button>
                     </div>
             
                 </div>
-            </div>-->
+            </div>
             
             <!-- Comment Section -->
             <!-- <div class="mt-5">
@@ -365,17 +392,33 @@ document.addEventListener("DOMContentLoaded", function () {
       dropdownMenu.style.display = "none";
     }
   });
-  //   document.addEventListener("click", function (e) {
-  //     const shareBtn = e.target.closest("#shareBtn");
-  //     if (shareBtn) {
-  //       const sharePopup = document.getElementById("sharePopup");
-  //       sharePopup.classList.toggle("hidden");
-  //     }
-  //   });
   document.addEventListener("click", function (e) {
-    const copyLinkBtn = e.target.closest("#copy-link");
+    const shareBtn = e.target.closest(".share-btn");
+
+    if (shareBtn) {
+      const popupId = shareBtn.dataset.popup
+      const sharePopup = document.getElementById(popupId);
+      sharePopup.classList.toggle("hidden");
+      // Find all share buttons
+      const allShareButtons = document.querySelectorAll('.share-btn');
+      // Loop through all share buttons
+      allShareButtons.forEach(btn => {
+        const popupId = btn.dataset.popup;
+        const sharePopup = document.getElementById(popupId);
+        if (btn !== shareBtn) {
+          sharePopup.classList.add("hidden");
+        }
+      });
+
+
+    }
+  });
+  document.addEventListener("click", function (e) {
+    const copyLinkBtn = e.target.closest(".copy-link");
     if (copyLinkBtn) {
-      navigator.clipboard.writeText("Your article URL here");
+      console.log(copyLinkBtn.dataset.url)
+      // navigator.clipboard.writeText(copyLinkBtn.dataset.link);
+      unsecuredCopyToClipboard(copyLinkBtn.dataset.link)
       copyLinkBtn.textContent = "Link Copied!";
       setTimeout(() => {
         copyLinkBtn.textContent = "";
