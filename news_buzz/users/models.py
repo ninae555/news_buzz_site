@@ -37,13 +37,19 @@ class User(AbstractUser):
         """
         return reverse("users:detail", kwargs={"pk": self.id})
 
+
 class Participant(TimeStampedModel):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     participant_id = CharField(_("Id of Participant"), max_length=255, unique=True)
     is_active = BooleanField(_("is participant active"), default=True)
+    first_name = models.CharField(_("First Name of Participant"), max_length=255, null=True, blank=True, default=None)
+    login_website_type = models.CharField(
+        _("Website accesed High / Low PC1"), max_length=255, null=True, blank=True, default=None
+    )
 
     def __str__(self) -> str:
         return self.participant_id
+
 
 class Session(TimeStampedModel):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
