@@ -19,7 +19,7 @@ const feedPage = document.getElementById("feedPage");
 const dropdownToggle = document.querySelector("#dropdownUser");
 const dropdownMenu = document.querySelector(".origin-top-right");
 const participantError = document.getElementById("participantError");
-console.log(dropdownMenu);
+// const first_nameError = document.getElementById("first_nameError");
 function disableButton(thisBtn) {
   thisBtn.disabled = true;
   thisBtn.classList.add("opacity-50", "cursor-not-allowed");
@@ -434,13 +434,28 @@ document.addEventListener("DOMContentLoaded", function () {
     // Clear previous errors
     participantError.textContent = "";
     participantError.classList.add("hidden");
+    // first_nameError.textContent = "";
+    // first_nameError.classList.add("hidden");
     const participant = document.getElementById("participant").value;
+    // const first_name = document.getElementById("first_name").value;
+
     // Check if fields are empty and show error message
+    jsValidationErrors = false;
     if (!participant) {
       participantError.textContent = "Participant is required";
       participantError.classList.remove("hidden");
       submitButton.disabled = false;
+      jsValidationErrors = true;
       submitButton.innerHTML = '<i class="fas fa-sign-in-alt"></i> Login';
+    }
+    // if (!first_name) {
+    //   first_nameError.textContent = "First Name is required";
+    //   first_nameError.classList.remove("hidden");
+    //   submitButton.disabled = false;
+    //   jsValidationErrors = true;
+    //   submitButton.innerHTML = '<i class="fas fa-sign-in-alt"></i> Login';
+    // }
+    if (jsValidationErrors) {
       return;
     }
     try {
@@ -459,7 +474,7 @@ document.addEventListener("DOMContentLoaded", function () {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ participant }),
+        body: JSON.stringify({ login_website_type: pageName, participant }), // first_name, 
       });
       const postData = await postResponse.json();
       if (!postResponse.ok) {

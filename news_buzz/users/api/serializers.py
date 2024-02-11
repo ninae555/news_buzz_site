@@ -26,7 +26,7 @@ class ParticipantSerializer(serializers.ModelSerializer[Participant]):
 
 class SessionSerializer(serializers.ModelSerializer[Session]):
     participant = serializers.CharField(max_length=255, min_length=10, allow_blank=False, allow_null=False)
-    first_name = serializers.CharField(max_length=255, allow_blank=False, allow_null=False, write_only=True)
+    # first_name = serializers.CharField(max_length=255, allow_blank=False, allow_null=False, write_only=True)
     login_website_type = serializers.CharField(max_length=255, allow_blank=False, allow_null=False, write_only=True)
 
     def validate(self, attrs: Any) -> Any:
@@ -34,7 +34,7 @@ class SessionSerializer(serializers.ModelSerializer[Session]):
             raise serializers.ValidationError({"participant": "Participant has already visited before."})
         participant = Participant.objects.create(
             participant_id=attrs.pop("participant"),
-            first_name=attrs.pop("first_name"),
+            # first_name=attrs.pop("first_name"),
             login_website_type=attrs.pop("login_website_type"),
         )
         attrs["participant"] = participant
@@ -42,4 +42,4 @@ class SessionSerializer(serializers.ModelSerializer[Session]):
 
     class Meta:
         model = Session
-        fields = ["participant", "id", "participant_id", "first_name", "login_website_type"]
+        fields = ["participant", "id", "participant_id", "login_website_type"]
