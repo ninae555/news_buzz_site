@@ -83,8 +83,8 @@ const performLogout = () => {
 const sendData = (endpoint, jsonData, postProcessFunc, method) => {
   jsonData.participant = sessionStorage.getItem("participantUUID");
   jsonData.session = sessionStorage.getItem("sessionId");
-  console.log("jsonData");
-  console.log(jsonData);
+  // console.log("jsonData");
+  // console.log(jsonData);
   fetch(endpoint, {
     method: method || "POST",
     headers: {
@@ -286,21 +286,21 @@ const loadArticles = () => {
                     <!-- Share Popup -->
                     <div id="sharePopup${article.id}"
                         class="popup-btn hidden absolute w-40 rounded shadow-lg bg-white p-4 flex flex-col items-center">
-                        <a href="https://www.facebook.com/share.php?u=${article.url}" target="blank" class="fb-share group text-center mb-2 text-gray-400 hover:text-blue-600"><i
+                        <a href="https://www.facebook.com/share.php?u=${article.url}" target="blank" data-id="${article.id}" data-type="FB" class="fb-share specific-share-btn group text-center mb-2 text-gray-400 hover:text-blue-600"><i
                                 class="fab fa-lg fa-facebook"></i><span class="group-hover:inline">
                                 Facebook</span></a>
-                        <a href="https://www.linkedin.com/sharing/share-offsite/?url=${article.url}" target="blank" class="linkedin-share group text-center mb-2 text-gray-400 hover:text-blue-700"><i
+                        <a href="https://www.linkedin.com/sharing/share-offsite/?url=${article.url}" data-id="${article.id}" data-type="L" target="blank" class="linkedin-share specific-share-btn group text-center mb-2 text-gray-400 hover:text-blue-700"><i
                                 class="fab fa-lg fa-linkedin"></i><span class="group-hover:inline">
                                 LinkedIn</span></a>
-                      <a href="https://twitter.com/intent/tweet?url=${article.url}" target="blank" class="twitter-share group text-center mb-2 text-gray-400 hover:text-gray-800"><i
+                      <a href="https://twitter.com/intent/tweet?url=${article.url}" data-id="${article.id}" data-type="X" target="blank" class="twitter-share specific-share-btn group text-center mb-2 text-gray-400 hover:text-gray-800"><i
                               class="fab fa-lg fa-square-x-twitter"></i><span class="group-hover:inline">
                               Twitter</span></a>
-                      <a href="https://www.reddit.com/submit?url=${article.url}" target="blank" class="reddit-share group text-center mb-2 text-gray-400"><i
+                      <a href="https://www.reddit.com/submit?url=${article.url}"  data-id="${article.id}" data-type="R" target="blank" class="reddit-share specific-share-btn group text-center mb-2 text-gray-400"><i
                                                   class="fab fa-lg fa-reddit"></i><span class="group-hover:inline">
                                                   Reddit</span></a>
 
-                        <button data-link="${article.url}" class="copy-link group text-center text-gray-400 hover:text-gray-600"><i
-                                class="fas fa-lg fa-copy"></i><span class="group-hover:inline"> Copy
+                        <button data-link="${article.url}" data-id="${article.id}" data-type="C" class="copy-link group text-center text-gray-400 hover:text-gray-600"><i
+                          class="fas fa-lg fa-copy"></i><span class="group-hover:inline"> Copy
                                 Link</span></button>
                     </div>
             
@@ -392,6 +392,7 @@ document.addEventListener("DOMContentLoaded", function () {
       dropdownMenu.style.display = "none";
     }
   });
+
   document.addEventListener("click", function (e) {
     const shareBtn = e.target.closest(".share-btn");
 
@@ -409,15 +410,13 @@ document.addEventListener("DOMContentLoaded", function () {
           sharePopup.classList.add("hidden");
         }
       });
-
-
     }
-  });
-  document.addEventListener("click", function (e) {
     const copyLinkBtn = e.target.closest(".copy-link");
     if (copyLinkBtn) {
-      console.log(copyLinkBtn.dataset.url)
-      // navigator.clipboard.writeText(copyLinkBtn.dataset.link);
+      disableButton(copyLinkBtn);
+      sendData("/api/share-clicks/", { article: copyLinkBtn.dataset.id, shared_on: copyLinkBtn.dataset.type }, () => {
+        enableButton(copyLinkBtn);
+      });
       unsecuredCopyToClipboard(copyLinkBtn.dataset.link)
       copyLinkBtn.textContent = "Link Copied!";
       setTimeout(() => {
@@ -426,7 +425,16 @@ document.addEventListener("DOMContentLoaded", function () {
           '<i class="fas fa-copy"></i><span class=" group-hover:inline"> Copy Link</span>';
       }, 5000);
     }
+    const specificShareBtn = e.target.closest(".specific-share-btn");
+    if (specificShareBtn) {
+      disableButton(specificShareBtn);
+      sendData("/api/share-clicks/", { article: specificShareBtn.dataset.id, shared_on: specificShareBtn.dataset.type }, () => {
+        enableButton(specificShareBtn);
+      });
+    }
+
   });
+
   loginForm.addEventListener("submit", async function (e) {
     e.preventDefault();
     submitButton.disabled = true;
