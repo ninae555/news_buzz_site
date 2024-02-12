@@ -10,20 +10,21 @@ class Publisher(TimeStampedModel):
 
     def __str__(self):
         return self.domain
+
+
 class Category(TimeStampedModel):
     name = models.CharField(max_length=255, unique=True)
 
     def __str__(self):
         return self.name
 
+
 class Article(TimeStampedModel):
     title = models.CharField(max_length=1000)
     content = models.TextField()
     url = models.URLField(max_length=1000, unique=True)
     description = models.TextField(null=True, blank=True)
-    publisher = models.ForeignKey(
-        Publisher, related_name="articles", on_delete=models.CASCADE
-    )
+    publisher = models.ForeignKey(Publisher, related_name="articles", on_delete=models.CASCADE)
     image_url = models.URLField(max_length=1000, null=True, blank=True)
     published_at = models.DateTimeField()
     author = models.CharField(max_length=255, null=True, blank=True)
@@ -74,9 +75,26 @@ class ReadEntireArticleClick(TimeStampedModel):
 
 
 class ShareClick(TimeStampedModel):
+    FACEBOOK = "FB"
+    TWITTER = "X"
+    COPY = "C"
+    INSTAGRAM = "I"
+    LINKEDIN = "L"
+    REDDIT = "R"
+
+    SHARED_ON_TYPES = [
+        (FACEBOOK, "FACEBOOK"),
+        (TWITTER, "TWITTER"),
+        (COPY, "COPY"),
+        (INSTAGRAM, "INSTAGRAM"),
+        (LINKEDIN, "LINKEDIN"),
+        (REDDIT, "REDDIT"),
+    ]
     participant = models.ForeignKey(Participant, on_delete=models.CASCADE)
     session = models.ForeignKey(Session, on_delete=models.CASCADE)
     article = models.ForeignKey(Article, on_delete=models.CASCADE)
+    shared_on = models.CharField(max_length=3, choices=SHARED_ON_TYPES)
+
 
 class ArticleTimeSpent(TimeStampedModel):
     session = models.ForeignKey(Session, on_delete=models.CASCADE)
