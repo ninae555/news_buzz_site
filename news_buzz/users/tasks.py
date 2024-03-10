@@ -82,7 +82,7 @@ MATCHER.add("ClimateChangeKeywords", [NLP_MODEL(keyword) for keyword in BROAD_KE
 
 
 def has_broad_keyword(preprocessed_content):
-    doc = NLP_MODEL(preprocessed_content)
+    doc = NLP_MODEL(preprocessed_content.lower())
     matches = MATCHER(doc)
     return len(matches) > 0
 

@@ -37,6 +37,8 @@ class ArticleViewSet(ListModelMixin, GenericViewSet):
             "image_url",
             "author",
             "publisher__domain",
+            "publisher__name",
+            "publisher__image",
             "published_at",
         )
         .order_by("-published_at")
