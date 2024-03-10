@@ -1,9 +1,26 @@
 log:
   level: INFO
 
+certificatesResolvers:
+  myresolver:
+    acme:
+      email: meet.daxini@gwu.edu
+      storage: /etc/traefik/acme.json
+      httpChallenge:
+        # Using HTTP Challenge
+        entryPoint: web
+
 entryPoints:
   web:
     address: ':80'
+    # http:
+    #   middlewares:
+    #     - redirect-to-https
+    http:
+      redirections:
+        entryPoint:
+          to: websecure
+
   websecure:
       address: ":443"
   flower:
@@ -12,24 +29,43 @@ entryPoints:
 http:
   routers:
     web-router:
-      rule: 'HostRegexp(`{host:.+}`)'
+      # rule: 'HostRegexp(`{host:.+}`)'
+      rule: 'Host(`newsbuzzworthy.com`)'
       entryPoints:
         - web
       middlewares:
         - csrf
       service: django
+    websecure-router:
+      rule: 'Host(`newsbuzzworthy.com`)'
+      entryPoints:
+        - websecure
+      middlewares:
+        - csrf
+      service: django
+      tls:
+        certResolver: myresolver
 
     flower-router:
-      rule: 'HostRegexp(`{host:.+}`)'
+      rule: 'PathPrefix(`/flower`) && Host(`newsbuzzworthy.com`)'
       entryPoints:
-        - flower
+        - websecure
       service: flower
+      middlewares:
+        - strip-flower-prefix
 
   middlewares:
+    # redirect-to-https:
+    #   redirectScheme:
+    #     scheme: https
+    #     permanent: true
     csrf:
       headers:
         hostsProxyHeaders: ['X-CSRFToken']
-
+    strip-flower-prefix:
+      stripPrefix:
+        prefixes:
+          - "/flower"
   services:
     django:
       loadBalancer:
