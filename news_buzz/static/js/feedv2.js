@@ -197,7 +197,7 @@ const loadArticles = () => {
                     <span class="mr-2 text-xs">
                         Published by:
                     </span>
-                    ${article.publisher}
+                    ${article.publisher || article.publisher_domain}
                 </div>
                 <div class="flex text-gray-400 text-sm items-center">
                     <span class="mr-2 text-xs">

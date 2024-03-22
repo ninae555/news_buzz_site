@@ -10,6 +10,7 @@ from news_buzz.users.views import participant_login
 
 urlpatterns = [
     path("kZ1lTZJmXE", TemplateView.as_view(template_name="pages/feed.html"), name="feed_high_pc1"),
+    path("demo", TemplateView.as_view(template_name="pages/feedv3.html"), name="demo"),
     path("r72iMRFUUE", TemplateView.as_view(template_name="pages/feed.html"), name="feed_low_pc1"),
     # path("about/", TemplateView.as_view(template_name="pages/about.html"), name="about"),
     # Django Admin, use {% url 'admin:index' %}
