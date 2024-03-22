@@ -1,4 +1,5 @@
 from typing import Any
+import random
 from django.db.models.query import QuerySet
 from rest_framework.mixins import (
     ListModelMixin,
@@ -89,7 +90,7 @@ class ArticleViewSet(ListModelMixin, GenericViewSet):
             ArticleSent.objects.bulk_create(
                 [ArticleSent(article_id=article["id"], session_id=request.participant_session.id) for article in page]
             )
-
+            random.shuffle(page)
             serializer = self.get_serializer(page, many=True)
             return self.get_paginated_response(serializer.data)
 
