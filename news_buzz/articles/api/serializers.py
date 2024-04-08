@@ -5,8 +5,21 @@ from news_buzz.articles.models import Article
 from news_buzz.articles.models import Reaction, Comment, ReadEntireArticleClick, ShareClick
 
 
+class CommentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Comment
+        fields = "__all__"
+
+
+class ArticleCommentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Comment
+        fields = ["id", "content", "created", "modified"]
+
+
 class ArticleSerializer(serializers.ModelSerializer):
     publisher = serializers.CharField(source="publisher__name")
+    comments = ArticleCommentSerializer(many=True)
     publisher_domain = serializers.CharField(source="publisher__domain")
     publisher_image = serializers.CharField(source="publisher__image")
     reaction = serializers.CharField()
@@ -25,6 +38,7 @@ class ArticleSerializer(serializers.ModelSerializer):
             "publisher_image",
             "published_at",
             "reaction",
+            "comments",
         ]
 
 

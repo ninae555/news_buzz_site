@@ -283,6 +283,30 @@ const loadArticles = () => {
       .then((data) => {
         currentPage = data.next;
         data.results.forEach((article) => {
+          let commentContent = ""
+          if (article["comments"]) {
+            for (const comment of article["comments"]) {
+              commentContent += `
+                <!-- Single comment -->
+                <div class="d-flex mb-3">
+                  <span class="comment user-icon img-wrapper rounded-circle me-4">
+                    <i class="fa-solid fa-circle-user"></i>
+                  </span>
+                  <div class="flex-grow-1">
+                    <div class="bg-light rounded-3">
+                      <span class="text-dark mb-0">
+                        <strong>${sessionStorage.getItem("firstName")}</strong>
+                      </span>
+                      <span class="text-muted d-block">
+                        <small>${comment["content"]}</small>
+                      </span>
+                    </div>
+                  </div>
+                </div>
+                <!-- Single comment -->
+              `
+            }
+          }
           const articleHTML = `
             <div class="col-sm-8 mx-auto mb-7">
               <div class="card bg-light">
@@ -317,14 +341,11 @@ const loadArticles = () => {
                 <!-- Media -->
                 <div class="media-image position-relative float-btn-outer">
                   <div class="img-wrapper">
-                    <img src="${article.image_url}" class="img-fluid" data-bs-toggle="modal" data-bs-target="#comment-modal">
+                    <img src="${article.image_url}" class="img-fluid">
                   </div>
-
                   <a href="${article.url}" target="blank" class="float-btn read-more-btn" data-id="${article.id}">
                     <span class="btn btn-dark-primary fs-7">Read More</span>
                   </a>
-
-
                 </div>
                 <!-- Media -->
                 <!-- Buttons -->
@@ -432,18 +453,24 @@ const loadArticles = () => {
                   <div class="mt-3 pt-6 border-top border-gray-300 w-100">
                     <!-- Input -->
                     <div class="d-flex mb-3">
-                      <a href="javascript: void(0);" class="comment user-icon img-wrapper rounded-circle me-4" >
+                      <span class="comment user-icon img-wrapper rounded-circle me-4">
                         <i class="fa-solid fa-circle-user"></i>
-                      </a>
+                      </span>
                       <div class="form-outline w-100">
                         <form class="nav nav-item w-100 position-relative">
-                          <textarea data-autoresize="" class="form-control pe-8 bg-light fs-7 " rows="1" placeholder="Write a comment..."></textarea>
-                          <button class="text-muted bg-transparent px-3 pe-5 position-absolute top-50 end-0 translate-middle-y border-0 text-hover-primary" type="submit" disabled>
+                          <input type="hidden" name="article" value="${article.id}">
+                          <textarea data-autoresize="" name="content" class="form-control pe-8 bg-light fs-7 " rows="1" placeholder="Write a comment..."></textarea>
+                          <button class="text-muted bg-transparent px-3 pe-5 position-absolute top-50 end-0 translate-middle-y border-0 text-hover-primary" type="submit">
                             <i class="fa-solid fa-paper-plane fs-7"></i>
                           </button>
                         </form>
                       </div>
                     </div>
+                    <!-- prev comments -->
+                    <div class="pt-3" id="commentBox${article.id}">
+                    ${commentContent}
+                    </div>
+                    <!-- prev comments -->
                   </div>
                 </div>
                 <!-- Buttons -->
@@ -583,4 +610,48 @@ $(document).on('click', '.emoji-container .emoji-icon', function (event) {
     { article: target.dataset.id, type: reactionsMap[emojiTitle] },
     () => { },
   );
+});
+
+const createComment = function (form) {
+  const articleId = form.querySelector('input[name="article"]').value;
+  const commentText = form.querySelector('textarea').value.trim();
+  if (commentText !== "") {
+    sendData("/api/comments/", { article: articleId, content: commentText }, (data) => {
+      // Clear the textarea after getting the value
+      form.querySelector('textarea').value = '';
+      const commentContent = `
+        <div class="d-flex mb-3">
+          <span class="comment user-icon img-wrapper rounded-circle me-4">
+            <i class="fa-solid fa-circle-user"></i>
+          </span>
+          <div class="flex-grow-1">
+            <div class="bg-light rounded-3">
+              <span class="text-dark mb-0">
+                <strong>${sessionStorage.getItem("firstName")}</strong>
+              </span>
+              <span class="text-muted d-block">
+                <small>${data.content}</small>
+              </span>
+            </div>
+          </div>
+        </div>
+      `;
+      // Append the new comment to the appropriate comment box
+      document.getElementById(`commentBox${articleId}`).innerHTML += commentContent;
+    });
+
+  }
+}
+
+document.addEventListener("DOMContentLoaded", function () {
+  document.body.addEventListener('keydown', function (event) {
+    if (event.target.tagName === 'TEXTAREA' && event.key === 'Enter') {
+      event.preventDefault(); // Prevent the default Enter action (new line)
+      createComment(event.target.closest('form'))
+    }
+  });
+  document.querySelector("#articleContainer").addEventListener('submit', function (event) {
+    event.preventDefault(); // Prevent the default form submission
+    createComment(event.target.closest('form'))
+  });
 });

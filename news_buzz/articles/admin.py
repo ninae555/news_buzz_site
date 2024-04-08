@@ -7,6 +7,7 @@ from news_buzz.articles.models import (
     Reaction,
     ReadEntireArticleClick,
     Category,
+    Comment,
 )
 from import_export import resources
 from import_export.admin import ImportExportModelAdmin
@@ -50,6 +51,18 @@ class PublisherAdmin(ImportExportMixin, admin.ModelAdmin):
 class CategoryAdmin(ImportExportMixin, admin.ModelAdmin):
     list_display = ["id", "name", "created", "modified"]
     search_fields = ["name", "id"]
+
+
+@admin.register(Comment)
+class CommentAdmin(ImportExportMixin, admin.ModelAdmin):
+    list_display = ["id", "article", "content", "session", "created", "modified"]
+    search_fields = [
+        "content",
+        "id",
+        "article",
+        "session",
+    ]
+    raw_id_fields = ["article", "session"]
 
 
 @admin.register(Article)
