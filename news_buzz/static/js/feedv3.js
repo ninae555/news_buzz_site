@@ -9,7 +9,15 @@ const indicatorLabel = loginButton.querySelector('.indicator-label');
 const indicatorProgress = loginButton.querySelector('.indicator-progress');
 const logoutBtn = document.getElementById("logoutBtn");
 let loadingCurrentPage = false;
-
+const reactionsMap = {
+  Like: "L",
+  Love: "LV",
+  CARE: "C",
+  Wow: "W",
+  Haha: "H",
+  Sad: "S",
+  Angry: "A"
+}
 // Function to disable the button
 function disableButton(thisBtn) {
   thisBtn.disabled = true;
@@ -43,7 +51,7 @@ const sendData = (endpoint, jsonData, postProcessFunc, method) => {
     })
     .catch((error) => {
       console.error("error from api:", error);
-      performLogout();
+      // performLogout();
     });
 };
 
@@ -103,26 +111,25 @@ logoutBtn.addEventListener("click", function (e) {
 });
 
 let currentPage = "/api/articles?";
-if (pageName == "feed_high_pc1") {
+if (pageName.includes("high")) {
   currentPage += new URLSearchParams({
     min_pc1: 0.75,
     max_pc1: 1,
   })
-} else if (pageName == "feed_low_pc1") {
+} else if (pageName.includes("low")) {
   currentPage += new URLSearchParams({
     min_pc1: 0,
     max_pc1: 0.25,
   })
 }
 document.body.addEventListener('click', function (event) {
-  // Check if the clicked element or its parent has the class 'dynamic-action'
   let target = event.target;
-  disableButton(target);
   if (target.classList.contains('read-more-btn') || target.parentElement.classList.contains('read-more-btn')) {
+    disableButton(target);
     target = target.classList.contains('read-more-btn') ? target : target.parentElement;
     sendData("/api/read-entire-article-clicks/", { article: target.dataset.id }, () => {
       enableButton(target);
-      window.open(target.dataset.url, "_blank");
+
     });
   }
 });
@@ -282,14 +289,11 @@ const loadArticles = () => {
                 <!-- Media Content -->
                 <div class="card-body p-5 p-sm-8">
                   <div class="d-flex align-items-center mb-4">
-                    <a href="javascript: void(0);" class="user-icon img-wrapper border rounded-circle me-2 read-more-btn"
-                    data-url="${article.url}" data-id="${article.id}">
-                      <img src="/media/${article.publisher_image}" class="img-fluid" alt="" />
+                    <a href="${article.url}" target="blank" class="user-icon img-wrapper border rounded-circle me-2 read-more-btn" data-id="${article.id}">
+                      <img src="${article.publisher_image}" class="img-fluid" alt="" />
                     </a>
                     <div class="d-flex flex-column lh-sm ">
-                      <a href="javascript: void(0);" class="text-dark mb-0 fw-bold mb-1 read-more-btn"
-                    data-url="${article.url}" data-id="${article.id}"
-                      >
+                      <a href="${article.url}" target="blank" class="text-dark mb-0 fw-bold mb-1 read-more-btn" data-id="${article.id}">
                         ${article.publisher || article.publisher_domain} </a>
                       <span class="text-muted fs-8 " style="margin-top:-2px">
                         ${new Date(article.published_at).toLocaleDateString(
@@ -316,9 +320,7 @@ const loadArticles = () => {
                     <img src="${article.image_url}" class="img-fluid" data-bs-toggle="modal" data-bs-target="#comment-modal">
                   </div>
 
-                  <a href="javascript: void(0);" class="float-btn read-more-btn" 
-                    data-url="${article.url}" data-id="${article.id}"
-                  >
+                  <a href="${article.url}" target="blank" class="float-btn read-more-btn" data-id="${article.id}">
                     <span class="btn btn-dark-primary fs-7">Read More</span>
                   </a>
 
@@ -330,7 +332,7 @@ const loadArticles = () => {
                   <div class="d-flex justify-content-between text-center  align-items-center w-100" style="min-height: 37px;">
                     <!--Reaction button-->
                     <div class="col text-start">
-                      <button type="button" class="react-btn btn btn-link btn-link-primary btn-lg text-decoration-none text-muted p-0 d-inline-flex align-items-center position-relative">
+                      <button type="button" data-id="${article.id}" class="react-btn btn btn-link btn-link-primary btn-lg text-decoration-none text-muted p-0 d-inline-flex align-items-center position-relative">
                         <span class="icon-container d-inline-flex align-items-center ">
                           <span class="react-icon">
                             <i class="fas fa-thumbs-up fs-4 me-2"></i>
@@ -374,13 +376,12 @@ const loadArticles = () => {
                     <!--Reaction button-->
                  <!--read more button-->
                 <div class="col">
-                  <button
-                    type="button"
+                  <a
                     class="btn btn-link btn-link-primary btn-lg text-decoration-none text-muted p-0 d-inline-flex align-items-center read-more-btn"
-                    data-url="${article.url}" data-id="${article.id}"
+                    href="${article.url}" target="blank" data-id="${article.id}"
                   >
                     <i class="fa-brands fa-readme fs-4 me-2"></i> Read More
-                  </button>
+                  </a>
                 </div>
                 <!--read more button-->
 
@@ -393,16 +394,16 @@ const loadArticles = () => {
                           <div class="wrap text-center p-3">
                             <!-- Begin Share -->
                             <div class="share">
-                              <a class="share-facebook" href="javascript: void(0);">
+                              <a href="https://www.facebook.com/share.php?u=${article.url}" target="blank" data-id="${article.id}" data-type="FB" class="share-social-btn share-facebook">
                                 <i class="fa-brands fa-facebook-f"></i>
                               </a>
-                              <a class="share-reddit fs-4" href="javascript: void(0);">
+                              <a href="https://www.reddit.com/submit?url=${article.url}"  data-id="${article.id}" data-type="R" target="blank" class="share-social-btn share-reddit fs-4">
                                 <i class="fa-brands fa-reddit"></i>
                               </a>
-                              <a class="share-twitter fs-4" href="javascript: void(0);">
+                              <a href="https://twitter.com/intent/tweet?url=${article.url}" data-id="${article.id}" data-type="X" target="blank" class="share-social-btn share-twitter fs-4">
                                 <i class="fa-brands fa-x-twitter"></i>
                               </a>
-                              <a class="share-linkedin" href="javascript: void(0);">
+                              <a  href="https://www.linkedin.com/sharing/share-offsite/?url=${article.url}" data-id="${article.id}" data-type="L" target="blank" class="share-social-btn share-linkedin">
                                 <i class="fa-brands fa-linkedin-in fs-6"></i>
                               </a>
                               <a href="javascript: void(0);" class="more_link" title="Link">
@@ -412,8 +413,8 @@ const loadArticles = () => {
                             <!-- End Share -->
                             <!-- Begin Link -->
                             <div class="link">
-                              <input class="form-control c-form-control" id="share-embed" name="link" type="text" readonly="" value="${article.url}">
-                                <button class="share-btn copy-link text-muted text-hover-primary" title="Copy to Clipboard" type="button" data-copytarget="#share-embed">
+                              <input class="form-control c-form-control" id="share-embed${article.id}" name="link" type="text" readonly="" value="${article.url}">
+                                <button class="share-btn copy-link text-muted text-hover-primary" title="Copy to Clipboard" type="button" data-copytarget="#share-embed${article.id}" data-id=${article.id}>
                                   <i class="fa-solid fa-copy"></i>
                                 </button>
                                 <button class="share-btn no-link text-muted text-hover-primary" title="Back" type="button">
@@ -454,7 +455,7 @@ const loadArticles = () => {
       })
       .catch((error) => {
         console.error("error from api:", error);
-        performLogout();
+        // performLogout();
       })
       .finally(() => {
         hideLoader();
@@ -478,73 +479,6 @@ if (
   loginPage.classList.remove("d-none");
 }
 
-
-// // Link
-// $('.more_link').click(function () {
-//   $(".share").toggleClass("active");
-//   $(".link").toggleClass("active");
-// });
-
-// $('.share-btn.no-link').click(function () {
-//   $(".link").removeClass("active");
-//   $(".share").removeClass("active");
-// });
-
-// $('#share').click(function () {
-//   $(".fa-share").toggleClass("expanded");
-// });
-
-// // Dropdown
-// $('.dropdown-menu.share-menu').on("click.bs.dropdown", function (e) {
-//   e.stopPropagation();
-//   e.preventDefault();
-// });
-
-// $('#share').on('hide.bs.dropdown', function () {
-//   $(".link").removeClass("active");
-//   $(".share").removeClass("active");
-//   $(".fa-share").removeClass("expanded");
-// });
-
-// // Show emoji container when button is clicked
-// $('.react-btn').on('click', function () {
-//   var emojiContainer = $(this).find('.emoji-container');
-//   var iconContainer = $(this).find('.icon-container');
-
-//   if (!iconContainer.hasClass('selected-emoji')) {
-//     // If like emoji is not already selected, show it
-//     emojiContainer.addClass('active');
-//     iconContainer.find('.react-icon').html('<div class="emoji like"><div class="icon" data-title="Like"></div></div>');
-//     iconContainer.addClass('selected-emoji');
-//     return; // Exit the function to prevent further execution
-//   }
-
-//   // Toggle visibility of emoji container
-//   if (emojiContainer.hasClass('active')) {
-//     // Remove selected option and show default icon when clicking again
-//     iconContainer.removeClass('selected-emoji')
-//     iconContainer.find('.react-icon').html('<i class="fas fa-thumbs-up fs-4 me-2"></i>');
-//     iconContainer.find('.icon-title').text('Like');
-//   } else {
-//     emojiContainer.addClass('active');
-//   }
-// });
-
-// // Update icon and title when emoji is clicked
-// $('.emoji-container .emoji-icon').on('click', function () {
-//   var emojiIcon = $(this).html();
-//   var emojiTitle = $(this).find('.icon').data('title');
-//   var iconContainer = $(this).closest('.react-btn').find('.icon-container');
-
-//   // Update the button's icon HTML content and title
-//   iconContainer.find('.react-icon').html(emojiIcon);
-//   iconContainer.addClass('selected-emoji');
-//   iconContainer.find('.icon-title').text(emojiTitle);
-
-//   // Remove active class to hide emoji container
-//   $(this).closest('.emoji-container').removeClass('active');
-// });
-
 // Link
 $(document).on('click', '.more_link', function () {
   $(".share").toggleClass("active");
@@ -556,7 +490,7 @@ $(document).on('click', '.share-btn.no-link', function () {
   $(".share").removeClass("active");
 });
 
-$(document).on('click', '#share', function () {
+$(document).on('click', '.share', function () {
   $(".fa-share").toggleClass("expanded");
 });
 
@@ -566,42 +500,87 @@ $(document).on("click.bs.dropdown", '.dropdown-menu.share-menu', function (e) {
   e.preventDefault();
 });
 
-$(document).on('hide.bs.dropdown', '#share', function () {
+document.addEventListener('hide.bs.dropdown', function () {
   $(".link").removeClass("active");
   $(".share").removeClass("active");
   $(".fa-share").removeClass("expanded");
 });
 
-// Show emoji container when button is clicked
-$(document).on('click', '.react-btn', function () {
-  var emojiContainer = $(this).find('.emoji-container');
-  var iconContainer = $(this).find('.icon-container');
+
+$(document).on('click', '.copy-link', function () {
+  const copyText = $(this).data('copytarget');
+  const inp = copyText ? $(copyText)[0] : null;
+  if (inp && inp.select) {
+    inp.select();
+    inp.setSelectionRange(0, 99999); // For mobile devices
+    try {
+      navigator.clipboard.writeText(inp.value);
+      sendData("/api/share-clicks/", { article: $(this).data('id'), shared_on: "C" }, () => { });
+      inp.blur();
+      $(this).addClass('copied');
+      setTimeout(function () {
+        $('.copy-link').removeClass('copied');
+      }, 1000);
+    } catch (err) {
+      alert('Please press Ctrl/Cmd+C to copy');
+    }
+  }
+});
+
+$(document).on('click', '.react-btn', function (event) {
+
+  const emojiContainer = $(this).find('.emoji-container');
+  const iconContainer = $(this).find('.icon-container');
+  let target = $(event.target).closest('.react-btn')[0];
 
   if (!iconContainer.hasClass('selected-emoji')) {
     emojiContainer.addClass('active');
     iconContainer.find('.react-icon').html('<div class="emoji like"><div class="icon" data-title="Like"></div></div>');
     iconContainer.addClass('selected-emoji');
-    return;
+    sendData(
+      "/api/reactions/",
+      { article: target.dataset.id, type: "L" },
+      () => { },
+    );
   }
-
-  if (emojiContainer.hasClass('active')) {
-    iconContainer.removeClass('selected-emoji')
-    iconContainer.find('.react-icon').html('<i class="fas fa-thumbs-up fs-4 me-2"></i>');
-    iconContainer.find('.icon-title').text('Like');
-  } else {
-    emojiContainer.addClass('active');
+  else {
+    if (emojiContainer.hasClass('active')) {
+      iconContainer.removeClass('selected-emoji')
+      iconContainer.find('.react-icon').html('<i class="fas fa-thumbs-up fs-4 me-2"></i>');
+      iconContainer.find('.icon-title').text('Like');
+      sendData(
+        "/api/reactions/delete_reaction/",
+        { article: target.dataset.id, type: "L" },
+        () => { },
+        "DELETE"
+      );
+    }
+    else {
+      emojiContainer.addClass('active');
+    }
   }
 });
 
-// Update icon and title when emoji is clicked
-$(document).on('click', '.emoji-container .emoji-icon', function () {
-  var emojiIcon = $(this).html();
-  var emojiTitle = $(this).find('.icon').data('title');
-  var iconContainer = $(this).closest('.react-btn').find('.icon-container');
+$(document).on('click', '.share-social-btn', function (event) {
+  const specificShareBtn = event.target.classList.contains('share-social-btn') ? event.target : event.target.parentElement;
+  disableButton(specificShareBtn);
+  sendData("/api/share-clicks/", { article: specificShareBtn.dataset.id, shared_on: specificShareBtn.dataset.type }, () => {
+    enableButton(specificShareBtn);
+  });
+});
 
+$(document).on('click', '.emoji-container .emoji-icon', function (event) {
+  const emojiIcon = $(this).html();
+  const emojiTitle = $(this).find('.icon').data('title');
+  const iconContainer = $(this).closest('.react-btn').find('.icon-container');
+  const target = $(event.target).closest('.react-btn')[0];
   iconContainer.find('.react-icon').html(emojiIcon);
   iconContainer.addClass('selected-emoji');
   iconContainer.find('.icon-title').text(emojiTitle);
-
   $(this).closest('.emoji-container').removeClass('active');
+  sendData(
+    "/api/reactions/",
+    { article: target.dataset.id, type: reactionsMap[emojiTitle] },
+    () => { },
+  );
 });
