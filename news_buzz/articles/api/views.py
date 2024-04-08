@@ -19,6 +19,7 @@ from django.db.models import OuterRef, Subquery
 from .permissions import IsValidParticipantSession
 from .filters import ArticlePublisherPC1Filter
 from rest_framework.settings import api_settings
+from news_buzz.utils.storages import MediaS3Storage
 
 # from django.contrib.postgres.aggregates import ArrayAgg
 
@@ -84,12 +85,17 @@ class ArticleViewSet(ListModelMixin, GenericViewSet):
                 other_articles = other_articles[2:]
             articles_combined.sort(key=lambda x: x["published_at"], reverse=True)
             articles.extend(articles_combined)
-
+        
         page = self.paginate_queryset(articles)
         if page is not None:
             ArticleSent.objects.bulk_create(
                 [ArticleSent(article_id=article["id"], session_id=request.participant_session.id) for article in page]
             )
+            media_storage = MediaS3Storage()
+            for article in page:
+                image_path = article["publisher__image"]
+                if image_path:
+                    article["publisher__image"] = media_storage.url(image_path)
             random.shuffle(page)
             serializer = self.get_serializer(page, many=True)
             return self.get_paginated_response(serializer.data)

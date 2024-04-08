@@ -30,6 +30,7 @@ http:
   routers:
     web-router:
       # rule: 'HostRegexp(`{host:.+}`)'
+      # rule: 'Host(`newsbuzzworthy.com`) || Host(`www.newsbuzzworthy.com`)'
       rule: 'Host(`newsbuzzworthy.com`)'
       entryPoints:
         - web
@@ -37,6 +38,7 @@ http:
         - csrf
       service: django
     websecure-router:
+      # rule: 'Host(`newsbuzzworthy.com`) || Host(`www.newsbuzzworthy.com`)'
       rule: 'Host(`newsbuzzworthy.com`)'
       entryPoints:
         - websecure
