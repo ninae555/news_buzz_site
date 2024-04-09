@@ -4,8 +4,9 @@ log:
 certificatesResolvers:
   myresolver:
     acme:
-      email: meet.daxini@gwu.edu
+      email: contact@newsbuzzworthy.com
       storage: /etc/traefik/acme.json
+      # caServer: https://acme-staging-v02.api.letsencrypt.org/directory
       httpChallenge:
         # Using HTTP Challenge
         entryPoint: web
