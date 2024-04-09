@@ -59,14 +59,11 @@ BROAD_KEYWORDS = [
     "climate resilience",
     "climate science",
     "conservation",
-    "conserve",
     "deforest",
     "drought",
     "eco-friendly",
-    "electric vehicle",
     "emission",
     "energy transition",
-    "environment",
     "environmental activism",
     "environmental impact",
     "environmental policy",
@@ -83,8 +80,6 @@ BROAD_KEYWORDS = [
     "natural resources",
     "ozone",
     "pollute",
-    "recycle",
-    "renewable",
     "renewable energy",
     "sea level rise",
     "solar energy",
@@ -119,7 +114,7 @@ def fetch_articles():
     newsapi = NewsApiClient(api_key=settings.NEWS_API_KEY)
     eligible_publishers = dict(Publisher.objects.filter(is_excluded=False).values_list("domain", "id"))
     params = {
-        "from_param": (timezone.now().date() - timedelta(days=10)).isoformat(),
+        "from_param": (timezone.now().date() - timedelta(days=3)).isoformat(),
         "to": timezone.now().date().isoformat(),
         "language": "en",
         # "pageSize": 100,
@@ -134,6 +129,8 @@ def fetch_articles():
         print(q) 
         while True:
             params["page"] += 1
+            if params["page"]>5:
+                break
             response = newsapi.get_everything(**params)
             articles = response["articles"]
             # Debugging
@@ -219,6 +216,32 @@ def fetch_articles():
     except ValueError:
         # In case there are fewer than 7 pairs, select all available pairs
         selected_pairs = list(paired_domains)
+
+    domains = list(
+        Publisher.objects.filter(articles__isnull=False, pc1__gte=0.75, pc1__lte=1)
+        .values_list("domain", flat=True)
+        .distinct()
+    )
+    # Initialize an empty set for the paired domains
+    paired_domains = []
+
+    # Iterate over the list in steps of 2
+    for i in range(0, len(domains), 2):
+        # Check if the second element of the pair exists
+        if i + 1 < len(domains):
+            # Join the two domains with a comma and add to the set
+            pair = ",".join([domains[i], domains[i + 1]])
+            paired_domains.append(pair)
+        else:
+            # If it's the last element without a pair, just append it alone
+            paired_domains.append(domains[i])
+
+    try:
+        selected_pairs += random.sample(paired_domains, 7)
+    except ValueError:
+        # In case there are fewer than 7 pairs, select all available pairs
+        selected_pairs += list(paired_domains)
+
     for domain in selected_pairs:
         for q in [" OR ".join(BROAD_KEYWORDS[:len(BROAD_KEYWORDS)//2]), " OR ".join(BROAD_KEYWORDS[len(BROAD_KEYWORDS) // 2:])]:
             params = {
