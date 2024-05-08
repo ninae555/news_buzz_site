@@ -43,3 +43,10 @@ class SessionSerializer(serializers.ModelSerializer[Session]):
     class Meta:
         model = Session
         fields = ["participant", "id", "participant_id", "login_website_type", "first_name"]
+
+
+class UpdateSessionSerializer(serializers.ModelSerializer[Session]):
+
+    class Meta:
+        model = Session
+        fields = ["is_active", "end_time"]

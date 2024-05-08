@@ -111,3 +111,13 @@ class ArticleTimeSpent(TimeStampedModel):
 class ArticleSent(TimeStampedModel):
     session = models.ForeignKey(Session, on_delete=models.CASCADE)
     article = models.ForeignKey(Article, on_delete=models.CASCADE)
+
+
+class SurveyReminder(TimeStampedModel):
+    title = models.CharField(max_length=1000)
+    content = models.TextField()
+    primary_button = models.CharField(max_length=255)
+    secondary_button = models.CharField(max_length=255)
+    minutes = models.PositiveIntegerField()
+    survey_link = models.URLField(max_length=1000)
+    follow_up_content = models.TextField()

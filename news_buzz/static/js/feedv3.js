@@ -27,6 +27,67 @@ function enableButton(thisBtn) {
   thisBtn.disabled = false;
 }
 
+function checkAndShowReminder() {
+  const modalElement = document.getElementById('survey-reminder-modal');
+  const modal = new bootstrap.Modal(document.getElementById('survey-reminder-modal'));
+  const currentTime = new Date().getTime();
+  const storedTime = parseInt(sessionStorage.getItem("lastSurveyReminderTime"));
+  const loginTime = parseInt(sessionStorage.getItem("loginTime"));
+  if (!isNaN(storedTime) && !isNaN(loginTime)) {
+
+    const intervalDuration = SURVEY_REMINDER_MINUTES * 60 * 1000;
+    if ((currentTime >= storedTime + intervalDuration) && !$(modalElement).hasClass('show')) {
+      if (storedTime != loginTime) {
+        $("#survey-reminder").hide()
+        $("#survey-reminder-folow-up").show()
+      } else {
+        $("#survey-reminder").show()
+        $("#survey-reminder-folow-up").hide()
+      }
+      modal.show();
+      sessionStorage.setItem("lastSurveyReminderTime", currentTime); // reset timer
+    }
+  }
+}
+
+// Set an interval to run every minute
+setInterval(checkAndShowReminder, (1 * 60 * 1000));
+
+document.getElementById('back-to-survey').addEventListener('click', async () => {
+  await updateSession(false);
+});
+
+document.getElementById('continue-news-feed').addEventListener('click', async () => {
+  await updateSession(true);
+});
+
+async function updateSession(isActive) {
+  await fetch('/api/participants/update_session/', {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      is_active: isActive,
+      end_time: new Date().toISOString(),
+      session: sessionStorage.getItem("sessionId")
+    })
+  });
+  // try {
+  //   const data = await response.json();
+  //   if (!response.ok) {
+  //     console.error('Failed to update session:', data);
+  //   } else {
+  //     console.log('Session updated successfully:', data);
+  //   }
+  // } catch (error) {
+  //   console.error('Error in response:', error);
+  // }
+  if (!isActive) {
+    performLogout()
+  }
+}
+
 const sendData = (endpoint, jsonData, postProcessFunc, method) => {
   jsonData.participant = sessionStorage.getItem("participantUUID");
   jsonData.session = sessionStorage.getItem("sessionId");
@@ -243,6 +304,10 @@ loginForm.addEventListener('submit', async (event) => {
       document.getElementById("participantIdSpan").textContent = participantId;
       feedLoad();
 
+      // Store the current time as login time
+      const loginTime = new Date().getTime(); // get current time in milliseconds
+      sessionStorage.setItem("loginTime", loginTime);
+      sessionStorage.setItem("lastSurveyReminderTime", loginTime);
     }
 
   } catch (error) {
@@ -655,3 +720,4 @@ document.addEventListener("DOMContentLoaded", function () {
     createComment(event.target.closest('form'))
   });
 });
+

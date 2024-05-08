@@ -1,14 +1,34 @@
 {% extends "admin/base_site.html" %}
 {% load static %}
 
-    {% block title %}{{ title }} | {{ site_title|default:_('Django site admin') }}{% endblock %}
+    {% block title %}News Buzz Admin{% endblock %}
+{% block extrastyle %}
+<style>
+#header #site-name a {
+    background: url({% static 'images/img/logo.webp' %}) no-repeat;
+    background-size: contain;
+    display: inline-block;
+    width: 200px; /* or the width of your logo */
+    height: 50px; /* or the height of your logo */
+    text-indent: -9999px; /* hides the default text */
+}
+</style>
+{% endblock %}
 
     {% block extrahead %}
-        <link rel="icon" href="{{STATIC_URL}}img/favicon.ico" sizes="48x48" />
+    <!-- Favicon for various devices -->
+    <link rel="icon" href="{% static 'favicons/favicon.ico' %}" type="image/x-icon">
+    <link rel="apple-touch-icon" sizes="180x180" href="{% static 'favicons/apple-touch-icon.png' %}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{% static 'favicons/favicon-32x32.png' %}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{% static 'favicons/favicon-16x16.png' %}">
+    <link rel="manifest" href="{% static 'favicons/site.webmanifest' %}">
+
+    <!-- Android Chrome -->
+    <link rel="icon" type="image/png" sizes="192x192" href="{% static 'favicons/android-chrome-192x192.png' %}">
+    <link rel="icon" type="image/png" sizes="512x512" href="{% static 'favicons/android-chrome-512x512.png' %}">
     {% endblock %}
     
     {% block branding %}
-    <h1 id="site-name"><a href="{% url 'admin:index' %}">{{ site_header|default:_('Django administration') }}</a></h1>
-     <img src="{% static 'images/img/logo.png' %}" alt="logo">
-     {{ block.super }}
- {% endblock %}
+     {% comment %} <img src="{% static 'images/img/logo.webp' %}" alt="logo"> {% endcomment %}
+    <h1 id="site-name"><a href="{% url 'admin:index' %}">News Buzz Admin</a></h1>
+     {% endblock %}

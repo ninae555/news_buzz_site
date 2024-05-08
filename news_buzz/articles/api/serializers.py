@@ -2,7 +2,7 @@ from typing import Any
 from rest_framework import serializers
 from rest_framework.validators import UniqueTogetherValidator
 from news_buzz.articles.models import Article
-from news_buzz.articles.models import Reaction, Comment, ReadEntireArticleClick, ShareClick
+from news_buzz.articles.models import Reaction, Comment, ReadEntireArticleClick, ShareClick, SurveyReminder
 
 
 class CommentSerializer(serializers.ModelSerializer):
@@ -104,3 +104,9 @@ class ShareClickSerializer(serializers.ModelSerializer):
         if attrs["session"].participant_id != attrs["participant"].id:
             raise serializers.ValidationError("Invalid details")
         return super().validate(attrs)
+
+
+class SurveyReminderSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SurveyReminder
+        fields = "__all__"
