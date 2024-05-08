@@ -127,11 +127,121 @@
         <!-- Feeds End-->
       </main>
     </div>
+
+{% if survey_reminder %}
+<!-- back to survey reminder modal start-->
+<div
+  class="modal fade"
+  id="survey-reminder-modal"
+  tabindex="-1"
+  aria-labelledby="survey-reminder-modalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="survey-reminder-modalLabel">
+                {{survey_reminder.title}}
+        </h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <div class="card">
+          <!-- Media Content -->
+          <div class="card-body p-3">
+            <div id="survey-reminder">
+                {{survey_reminder.content|safe}}
+            </div>
+            <div id="survey-reminder-folow-up" style="display: none;">
+                {{survey_reminder.follow_up_content|safe}}
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <a href="{{survey_reminder.survey_link}}"
+          class="btn btn-primary"
+          id="back-to-survey">
+                {{survey_reminder.primary_button}}
+        </a>
+        <a href="#"
+          class="btn btn-secondary"
+          data-bs-dismiss="modal"
+          id="continue-news-feed">
+                {{survey_reminder.secondary_button}}
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- back to survey reminder modal end-->
+{% else %}
+<!-- back to survey reminder modal start-->
+<div
+  class="modal fade"
+  id="survey-reminder-modal"
+  tabindex="-1"
+  aria-labelledby="survey-reminder-modalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="survey-reminder-modalLabel">
+          Back to Survey Reminder
+        </h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <div class="card">
+          <!-- Media Content -->
+          <div class="card-body p-3">
+            <div>
+<p>Thank you for exploring the news feed.</p>
+<p>It's been 15 minutes since you started exploring the news feed. You can continue browsing the news feed if you'd like, or you can return to the survey using the link below to provide your valuable feedback.</p>
+<p>Your participation is greatly appreciated!</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <a href="#"
+          class="btn btn-primary"
+          data-bs-dismiss="modal"
+          id="back-to-survey">
+          Back to Survey
+        </a>
+        <a href="#"
+          class="btn btn-secondary"
+          data-bs-dismiss="modal"
+          id="continue-news-feed">
+          Continue Exploring
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- back to survey reminder modal end-->
+{% endif %}
+
     <!--Main End-->
     <a href="#" class="back-to-top d-flex align-items-center justify-content-center">
       <i class="bi bi-arrow-up-short"></i>
     </a>
     <!--Script-->
+    <script>
+      const SURVEY_REMINDER_MINUTES = {{survey_reminder.minutes}};
+    </script>
     <script src="{% static 'js/jquery-3.6.0.min.js' %}"></script>
     <script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
     <script src="{% static 'js/feedv3.js' %}"></script>

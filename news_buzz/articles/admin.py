@@ -8,6 +8,7 @@ from news_buzz.articles.models import (
     ReadEntireArticleClick,
     Category,
     Comment,
+    SurveyReminder,
 )
 from import_export import resources
 from import_export.admin import ImportExportModelAdmin
@@ -86,3 +87,12 @@ class ArticleSentAdmin(ImportExportMixin, admin.ModelAdmin):
 class ReactionAdmin(ImportExportMixin, admin.ModelAdmin):
     list_display = ["id", "participant", "article", "type"]
     resource_class = ReactionResource
+
+
+@admin.register(SurveyReminder)
+class SurveyReminderAdmin(admin.ModelAdmin):
+    list_display = ["id", "title", "created", "modified"]
+    search_fields = [
+        "id",
+        "title",
+    ]

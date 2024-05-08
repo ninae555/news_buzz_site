@@ -199,6 +199,7 @@ TEMPLATES = [
                 "django.template.context_processors.tz",
                 "django.contrib.messages.context_processors.messages",
                 "news_buzz.users.context_processors.allauth_settings",
+                "news_buzz.users.context_processors.survey_reminder",
             ],
         },
     }

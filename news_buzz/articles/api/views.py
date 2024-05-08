@@ -13,8 +13,21 @@ from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 from news_buzz.articles.models import Article, Category
 from .serializers import ArticleSerializer
-from news_buzz.articles.models import Reaction, Comment, ReadEntireArticleClick, ArticleSent, ShareClick
-from .serializers import ReactionSerializer, CommentSerializer, ReadEntireArticleClickSerializer, ShareClickSerializer
+from news_buzz.articles.models import (
+    Reaction,
+    Comment,
+    ReadEntireArticleClick,
+    ArticleSent,
+    ShareClick,
+    SurveyReminder,
+)
+from .serializers import (
+    ReactionSerializer,
+    CommentSerializer,
+    ReadEntireArticleClickSerializer,
+    ShareClickSerializer,
+    SurveyReminderSerializer,
+)
 from django.db.models import OuterRef, Subquery
 from .permissions import IsValidParticipantSession
 from .filters import ArticlePublisherPC1Filter
@@ -149,3 +162,10 @@ class ShareClickViewSet(CreateModelMixin, GenericViewSet):
     permission_classes = []
     queryset = ShareClick.objects.all()
     serializer_class = ShareClickSerializer
+
+
+class SurveyReminderViewSet(ListModelMixin, GenericViewSet):
+    authentication_classes = []
+    permission_classes = []
+    queryset = SurveyReminder.objects.all()
+    serializer_class = SurveyReminderSerializer
