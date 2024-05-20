@@ -81,7 +81,8 @@
           <!--User Menu-->
           <div class="User-area">
             <div class="d-inline-flex align-items-center text-break">
-              <span class="text-end me-1 lh-sm">
+              <a href="{{survey_reminder.survey_link}}" id="back-to-survey" class="d-flex align-items-center btn btn-primary justify-content-center fs-8 d-none" > Back to Survey </a>
+              <span class="text-end ms-5 me-1 lh-sm">
                 <h3 class="fs-7 m-0 fw-bolder" id="firstNameContainer"></h3>
               </span>
               <div class="User-avtar">
@@ -128,6 +129,7 @@
       </main>
     </div>
 
+    {% comment %}
 {% if survey_reminder %}
 <!-- back to survey reminder modal start-->
 <div
@@ -233,7 +235,7 @@
 </div>
 <!-- back to survey reminder modal end-->
 {% endif %}
-
+{% endcomment %}
     <!--Main End-->
     <a href="#" class="back-to-top d-flex align-items-center justify-content-center">
       <i class="bi bi-arrow-up-short"></i>
