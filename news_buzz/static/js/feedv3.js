@@ -28,24 +28,14 @@ function enableButton(thisBtn) {
 }
 
 function checkAndShowReminder() {
-  const modalElement = document.getElementById('survey-reminder-modal');
-  const modal = new bootstrap.Modal(document.getElementById('survey-reminder-modal'));
+  // const modalElement = document.getElementById('survey-reminder-modal');
+  // const modal = new bootstrap.Modal(document.getElementById('survey-reminder-modal'));
   const currentTime = new Date().getTime();
-  const storedTime = parseInt(sessionStorage.getItem("lastSurveyReminderTime"));
   const loginTime = parseInt(sessionStorage.getItem("loginTime"));
-  if (!isNaN(storedTime) && !isNaN(loginTime)) {
-
+  if (!isNaN(loginTime)) {
     const intervalDuration = SURVEY_REMINDER_MINUTES * 60 * 1000;
-    if ((currentTime >= storedTime + intervalDuration) && !$(modalElement).hasClass('show')) {
-      if (storedTime != loginTime) {
-        $("#survey-reminder").hide()
-        $("#survey-reminder-folow-up").show()
-      } else {
-        $("#survey-reminder").show()
-        $("#survey-reminder-folow-up").hide()
-      }
-      modal.show();
-      sessionStorage.setItem("lastSurveyReminderTime", currentTime); // reset timer
+    if ((currentTime >= loginTime + intervalDuration)) {
+      $('#back-to-survey').removeClass('d-none');
     }
   }
 }
@@ -57,9 +47,9 @@ document.getElementById('back-to-survey').addEventListener('click', async () => 
   await updateSession(false);
 });
 
-document.getElementById('continue-news-feed').addEventListener('click', async () => {
-  await updateSession(true);
-});
+// document.getElementById('continue-news-feed').addEventListener('click', async () => {
+//   await updateSession(true);
+// });
 
 async function updateSession(isActive) {
   await fetch('/api/participants/update_session/', {
